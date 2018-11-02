@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<script src="public/js/jquery-2.1.4.min.js"></script>
+		<script src="public/js/layer/layer.js"></script>
+		<link rel="stylesheet" href="/public/css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="/public/css/media-100.css" />
+		<link rel="stylesheet" type="text/css" href="/public/css/login-style.css" />
+		<link rel="stylesheet" type="text/css" href="public/css/wwt_style.css" />
+		<style>
+			.sps-per-price:before {
+				content: '￥';
+			}
+			
+			#spsTotalPrice:after {
+				content: '元';
+			}
+			
+			#spsTotalNo:before {
+				content: '（';
+			}
+			
+			#spsTotalNo:after {
+				content: '）';
+			}
+			
+			.sps-shopping-car-all {
+				height: 20px;
+				margin-top: 28px;
+			}
+			
+			.hide {
+				display: none;
+			}
+			
+			.spsTotalCheck {
+				height: 20px;
+				margin-top: 28px;
+			}
+			
+			#cartImg {
+				width: 98px;
+			}
+			/*结算页面*/
+			
+			.sps-pay-order {
+				position: absolute;
+				top: 0;
+			}
+			
+			.sps-pay-order-confirm {
+				float: left;
+				width: 100%;
+				padding-bottom: 20px;
+				position: fixed;
+				left: 0;
+				bottom: 0;
+			}
+			
+			.sps-pay-order-confirmbtn {
+				width: 94%;
+				height: 50px;
+				margin-left: 3%;
+				border: none;
+				outline: none;
+				color: #fff;
+				background: -moz-linear-gradient(left, #0189fe 0%, #00e4ff 100%);
+				background: -webkit-linear-gradient(left, #0189fe 0%, #00e4ff 100%);
+				background: -o-linear-gradient(left, #0189fe 0%, #00e4ff 100%);
+				background: -ms-linear-gradient(left, #0189fe 0%, #00e4ff 100%);
+				filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0189fe', endColorstr='#00e4ff', GradientType=0);
+			}
+			
+			.sps-pay-order-detail table {
+				width: 100%;
+			}
+			
+			.sps-user-deal {
+				font-size: 18px;
+				border-radius: 50%;
+				width: 18px;
+				height: 18px;
+				border: 1px solid #c0c0c0;
+				vertical-align: middle;
+			}
+			
+			.sps-pay-credits {
+				font-size: 20px;
+				width: 20px;
+				height: 20px;
+				border: 1px solid #c0c0c0;
+			}
+			
+			.sps_select_address {
+				color: #00D1FF;
+				border: 1px solid #00d1ff !important;
+			}
+			
+			.sps-confirmbtn-invalid {
+				background: #C0C0C0;
+			}
+			
+			.sps-pay-order-words {
+				width: 100%;
+			}
+			
+			.sps-pay-order-needmoney .sps-price {
+				margin-left: -40px;
+			}
+			
+			.sps-pay-order-product img {
+				width: 100px;
+			}
+			
+			.sps-pay-order-needmoney td:first-child {
+				width: 100px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="sps-shopping-car">
+			<div class="sps-shopping-car-top">
+				<span>购物车</span>
+				<span id="edit"><a href="javascript:;">编辑</a></span>
+			</div>
+			<div class="sps-shopping-car-body">
+				<ul class="mui-table-view">
+					{%foreach from=$data item=item1%}
+					<li class="mui-table-view-cell mui-media">
+						<a href="javascript:;">
+							<div class="mui-media-object mui-pull-left">
+								<img id="{%$item1.cart_id%}" class="sps-shopping-car-checkbox" src="/public/web/images/no_choose.png">
+							</div>
+							<img id="cartImg" class="mui-media-object mui-pull-left" src="{%$item1.img%}">
+							<div class="mui-media-body">
+								<div class="mui-ellipsis">
+									{%$item1.deal_name%}
+								</div>
+								<p class="sps-shopping-car-price">
+									<span class="sps-per-price">{%$item1.current_price%}</span>
+								</p>
+								<div class="plus-or-minus">
+									<table>
+										<tr>
+											<td class="sps-pom-left">-</td>
+											<td id="sps-pom-mid" class="sps-pom-mid">{%$item1.num%} </td>
+											<td class="sps-pom-right">+</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						</a>
+					</li>
+					{%/foreach%}
+				</ul>
+			</div>
+			<div class="sps-shopping-car-edit-bottom hide">
+				<div class="mui-media-object mui-pull-left">
+					<img class="spsTotalCheck" src="/public/web/images/no_choose.png">
+				</div>
+				<div class="mui-media-object mui-pull-left sps-shopping-car-edit-totalno">
+					<span>全选</span>
+				</div>
+				<div class="mui-media-object mui-pull-left">
+					<button type="button" id="delete"><span>删除</span></button>
+				</div>
+			</div>
+			<div class="sps-shopping-car-total">
+				<div class="mui-media-object mui-pull-left">
+					<img class="spsTotalCheck" class="sps-shopping-car-all" src="/public/web/images/no_choose.png">
+				</div>
+				<div class="mui-media-object mui-pull-left sps-shopping-car-totalno">
+					<span>全选</span>
+					<span>合计：</span>
+					<span id="spsTotalPrice">0.00</span>
+				</div>
+				<div class="mui-media-object mui-pull-left">
+					<button type="button" id="jiesuan" class="wwt_gwc_js"><span>结算</span><span id="spsTotalNo">0</span></button>
+				</div>
+			</div>
+			<div class="footer">
+				<table>
+					<tr>
+						<td>
+							<a href="index.php?ctl=user&act=home">
+								<span><img class="bottomMenuIcon" style="height: 25px;" src="/public/web/images/home_dark.png"/></span>
+								<div style="color: #D4C9B4;" class="bottomMenuWords">首页</div>
+							</a>
+						</td>
+						<td>
+							<a href="index.php?ctl=mall">
+								<span><img class="bottomMenuIcon" style="height: 25px;" src="/public/web/images/market_dark.png"/></span>
+								<div style="color: #D4C9B4;" class="bottomMenuWords">SPS商城</div>
+							</a>
+						</td>
+						<td>
+							<a href="index.php?ctl=mall&act=cart_detail">
+								<span><img class="bottomMenuIcon" style="height: 25px;" src="/public/web/images/shoppingcar_light.png"/></span>
+								<div style="color: #00D1FF;" class="bottomMenuWords">购物车</div>
+							</a>
+							<!--<td>
+								<a href="index.php?ctl=translate">
+									<span><img class="bottomMenuIcon" style="height: 25px;" src="/public/web/images/pay_dark.png"/></span>
+									<div style="color: #D4C9B4;" class="bottomMenuWords">SPS支付</div>
+								</a>
+							</td>-->
+							<td>
+								<a href="index.php?ctl=user&act=myinfo">
+									<span><img class="bottomMenuIcon" style="height: 25px;" src="/public/web/images/mine_dark.png"/></span>
+									<div style="color: #D4C9B4;" class="bottomMenuWords">我的</div>
+								</a>
+							</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		<!--结算页面-->
+		<div class="sps-pay-order hide">
+			<div class="nav">
+				<a href="javascript:;" class="back"></a>
+				订单付款
+				<a href="javascrpt:;" class="right">
+
+				</a>
+			</div>
+			<div class="sps-my-spschain-footer"></div>
+			<div class="sps-pay-order-detail">
+				<table>
+					<!--<tr id="oneBuy" class="hide">
+						<td class="sps-pay-order-product"><img src="{%$data.img%}" /> </td>
+						<td class="sps-pay-order-words">
+							<p>{%$data.deal_name%}</p>
+							<p>
+								<span id="merPrice" class="sps-price">{%$data.current_price%}</span>
+								<span id="buyDetailMerNo"></span>
+							</p>
+						</td>
+					</tr>-->
+					<!--<tr id="allBuy" class="hide">
+						<td class="sps-pay-order-product"><img src="{%$data.img%}" /> </td>
+						<td class="sps-pay-order-words">
+							<p>{%$data.deal_name%}</p>
+							<p>
+								<span id="merPrice" class="sps-price">{%$data.current_price%}</span>
+								<span id="buyDetailMerNo"></span>
+							</p>
+						</td>
+					</tr>-->
+					<tr class="sps-pay-order-needmoney">
+						<td style="font-size: 13px;">
+							应付金额：
+						</td>
+						<td>
+							<span id="spsNeedPay" class="sps-price"></span>
+						</td>
+					</tr>
+				</table>
+				<table class="sps-pay-order-consignee" onclick="window.location.href='index.php?ctl=setting&amp;act=address_gl&addr=1'">
+					<tr>
+						<td>
+							<p>收货人：<span id="receivePayer">{%$address[0].user_name%}</span></p>
+							<p>联系电话：<span id="contact">{%$address[0].user_phone%}</span></p>
+							<p>收货地址：<span id="receiveAddr">{%$address[0].address%}{%$address[0].address1%}</span></p>
+						</td>
+						<td><img src="/public/web/images/step_in.png" /> </td>
+					</tr>
+				</table>
+			</div>
+			<div class="sps-my-spschain-footer"></div>
+			<div class="sps-pay-order-useragreement">
+				<ul class="mui-table-view">
+					<li style="font-size: 14px;" class="mui-table-view-cell mui-media">
+						<span class="sps-user-deal mui-icon"></span>
+						<span>SPS区块链</span> 《
+						<a href="http://xcb.quanx.cc/agreement/client_index.html">用户协议</a>》
+					</li>
+					<li style="font-size: 12px;" class="mui-table-view-cell mui-media">
+						当前sps商链价格=<span id="nowPrice"></span>元
+						<span class="sps-pay-order-gift">购买即赠送<span id="spsPresent"></span>sps商链</span>
+					</li>
+				</ul>
+			</div>
+			<div class="sps-my-spschain-footer"></div>
+			<div class="sps-pay-order-creditspay">
+				<div class="sps-pay-order-creditspay-one">
+					<span>积分付款</span>
+					<span style="font-size: 12px;">（1积分=1元）</span>
+				</div>
+				<div class="sps-pay-order-creditspay-two">
+					<table>
+						<tr>
+							<td style="width: 10%;"><img src="/public/web/images/credits.png" style="width: 30px;height: 30px;" /> </td>
+							<td style="width: 75%;">
+								<span style="font-size: 14px;">购物积分</span><br />
+								<span style="font-size: 12px;color: #C0C0C0;">当前积分：{%$user_info.consume_credits%}</span>
+							</td>
+							<td style="text-align: right;">
+								<span class="sps-pay-credits mui-icon mui-icon-checkmarkempty sps_select_address"></span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="sps-my-spschain-footer"></div>
+			<div class="sps-pay-order-confirm">
+				<button id="confirmPay" type="button" class="sps-pay-order-confirmbtn">确认付款</button>
+			</div>
+		</div>
+		<!--输入密码页-->
+		<div class="sps-input-pwd hide">
+			<div class="sps-pwd-body">
+				<p class="sps-pwd-close"><span>×</span></p>
+				<p class="sps-pwd-title">输入交易密码</p>
+				<div class="sps-pwd-cont">
+					<table>
+						<tr>
+							<td><input type="password" class="sps-pwd-word" value="" maxlength="1" />
+								<input type="password" class="sps-pwd-word" value="" maxlength="1" />
+								<input type="password" class="sps-pwd-word" value="" maxlength="1" />
+								<input type="password" class="sps-pwd-word" value="" maxlength="1" />
+								<input type="password" class="sps-pwd-word" value="" maxlength="1" />
+								<input type="password" class="sps-pwd-word" value="" maxlength="1" /> </td>
+						</tr>
+					</table>
+				</div>
+				<p>
+					<button class="sps-pwd-confirm" type="button">确定</button>
+				</p>
+			</div>
+		</div>
+		<script src="/public/js/sps.js"></script>
+	</body>
+	<script>
+		/*输入密码*/
+		var flag = 2;
+		var txts = document.getElementsByClassName('sps-pwd-word');
+		for(var i = 0; i < txts.length; i++) {
+			var t = txts[i];
+			t.index = i;
+			t.setAttribute("readonly", true);
+			t.onkeyup = function() {
+
+				if(this.value) {
+					var next = this.index + 1;
+					if(next > txts.length - 1) return;
+					txts[next].removeAttribute("readonly");
+					txts[next].focus();
+				} else {
+					if(flag == 1) {
+						var prev = this.index;
+						if(prev < 0) return;
+						txts[prev].focus();
+						flag = 2;
+					} else {
+						var prev = this.index - 1;
+						if(prev < 0) return;
+						txts[prev + 1].setAttribute("readonly", 'readonly');
+						txts[prev].focus();
+						flag = 1;
+					}
+				}
+			}
+		}
+		txts[0].removeAttribute("readonly");
+		$('.sps-pwd-close span').click(function() {
+			$('.sps-input-pwd').addClass('hide');
+		})
+		$('.sps-pwd-confirm').click(function() {
+			var txts = document.getElementsByClassName('sps-pwd-word');
+			var pwd = '';
+			for(var i = 0; i < txts.length; i++) {
+				pwd += txts[i].value;
+			}
+			var id = '{%$user_info.id%}';
+			var cartId = '';
+			var cart = document.getElementsByClassName('sps-shopping-car-checkbox');
+			for(var i = 0; i < cart.length; i++) {
+				if(cart[i].getAttribute('src') == '/public/web/images/choose.png') {
+					cartId += cart[i].getAttribute('id') + ',';
+				}
+			}
+			cartId = cartId.substr(0, cartId.length - 1);
+			var addressId = '{%$address[0].address_id%}';
+			$.post('api/index.php?ctl=cart&act=cart_do_payment', {
+				'id': id,
+				'cart_id': cartId,
+				'address_id': addressId,
+				'user_pwd_trade': pwd
+			}, function(data) {
+				if(data) {
+					var obj = eval('(' + data + ')');
+					if(obj.status == true) {
+						alert(obj.msg);
+						window.location.href = "index.php?ctl=mall&act=cart_detail";
+					} else {
+						layer.msg(obj.msg, function() {
+
+						});
+					}
+				} else {
+					alert('服务器错误');
+				}
+			})
+			window.localStorage.clear();
+		})
+		$('.sps-pwd-word').click(function() {
+			setTimeout(function() {
+				$('.sps-pwd-body').scrollIntoView(true);
+			}, 100)
+		})
+		/*购物车*/
+		var checked = 0; //是否全选
+		var perPrice = 0; //单价
+		var perPriceAll = 0;
+		var num = 0;
+		var totalPrice = 0; //总价
+		$('.sps-pom-right').on('click', function() { //数量加
+			var totalNo = $(this).parent().find('.sps-pom-mid').text();
+			totalNo = parseFloat(totalNo);
+			totalNo++;
+			$(this).parent().find('.sps-pom-mid').text(totalNo);
+			//价格计算
+			if($(this).parents('.mui-media').find('a .mui-media-object img').attr('src') == '/public/web/images/choose.png') {
+				perPrice = $(this).parents('.plus-or-minus').siblings('.sps-shopping-car-price').find('span').text();
+				num = totalNo;
+				totalPrice = $('#spsTotalPrice').text();
+				perPriceAll = perPrice * num;
+				totalPrice = parseFloat(totalPrice) + parseFloat(perPrice);
+				$('#spsTotalPrice').text(totalPrice.toFixed(2));
+			}
+			//更新购物车
+			var id = '{%$user_info.id%}';
+			var cartId = $(this).parents('.mui-media').find('.sps-shopping-car-checkbox').attr('id');
+			var num = $(this).siblings('.sps-pom-mid').text();
+			$.post('api/index.php?ctl=cart&act=do_update_cart', {
+				'id': id,
+				'cart_id': cartId,
+				'num': num
+			}, function(data) {
+				if(data) {
+					var obj = eval('(' + data + ')');
+					if(obj.status == true) {
+
+					} else {
+						layer.msg(obj.msg, function() {
+
+						});
+					}
+				} else {
+					alert('服务器返回一个错误');
+				}
+			})
+		});
+		$('.sps-pom-left').on('click', function() { //数量减
+			var totalNo = $(this).parent().find('.sps-pom-mid').text();
+			totalNo = parseFloat(totalNo);
+			if(totalNo != '1') {
+				totalNo--;
+				//价格计算
+				if($(this).parents('.mui-media').find('a .mui-media-object img').attr('src') == '/public/web/images/choose.png') {
+					perPrice = $(this).parents('.plus-or-minus').siblings('.sps-shopping-car-price').find('span').text();
+					num = totalNo;
+					totalPrice = $('#spsTotalPrice').text();
+					perPriceAll = perPrice * num;
+					totalPrice = parseFloat(totalPrice) - parseFloat(perPrice);
+					$('#spsTotalPrice').text(totalPrice.toFixed(2));
+				}
+			}
+			$(this).parent().find('.sps-pom-mid').text(totalNo);
+			//更新购物车
+			var id = '{%$user_info.id%}';
+			var cartId = $(this).parents('.mui-media').find('.sps-shopping-car-checkbox').attr('id');
+			var num = $(this).siblings('.sps-pom-mid').text();
+			$.post('api/index.php?ctl=cart&act=do_update_cart', {
+				'id': id,
+				'cart_id': cartId,
+				'num': num
+			}, function(data) {
+				if(data) {
+					var obj = eval('(' + data + ')');
+					if(obj.status == true) {
+
+					} else {
+						layer.msg(obj.msg, function() {
+
+						});
+					}
+				} else {
+					alert('服务器返回一个错误');
+				}
+			})
+		});
+		//物品勾选
+		$('.sps-shopping-car-checkbox').click(function() {
+			if($(this).attr('src') == '/public/web/images/no_choose.png') {
+				$(this).attr('src', '/public/web/images/choose.png');
+				checked++;
+				//价格计算
+				perPrice = $(this).parent().siblings('.mui-media-body').find('.sps-shopping-car-price>span').text();
+				num = $(this).parent().siblings('.mui-media-body').find('.plus-or-minus .sps-pom-mid').text();
+				totalPrice = $('#spsTotalPrice').text();
+				perPriceAll = perPrice * num;
+				totalPrice = parseFloat(totalPrice) + parseFloat(perPriceAll);
+				$('#spsTotalPrice').text(totalPrice.toFixed(2));
+				//结算数量
+				$('#spsTotalNo').text(checked);
+			} else {
+				$(this).attr('src', '/public/web/images/no_choose.png');
+				checked--;
+				//价格计算
+				perPrice = $(this).parent().siblings('.mui-media-body').find('.sps-shopping-car-price>span').text();
+				num = $(this).parent().siblings('.mui-media-body').find('.plus-or-minus .sps-pom-mid').text();
+				totalPrice = $('#spsTotalPrice').text();
+				perPriceAll = perPrice * num;
+				totalPrice = parseFloat(totalPrice) - parseFloat(perPriceAll);
+				$('#spsTotalPrice').text(totalPrice.toFixed(2));
+				//结算数量
+				$('#spsTotalNo').text(checked);
+			}
+			if($('.sps-shopping-car-checkbox').length == checked) {
+				$('.spsTotalCheck').attr('src', '/public/web/images/choose.png');
+			} else {
+				$('.spsTotalCheck').attr('src', '/public/web/images/no_choose.png');
+			}
+		})
+		//全选按钮
+		$('.spsTotalCheck').click(function() {
+			if($(this).attr('src') == '/public/web/images/no_choose.png') { //全选
+				checked = $('.sps-shopping-car-checkbox').length;
+				$(this).attr('src', '/public/web/images/choose.png');
+				$('.sps-shopping-car-checkbox').attr('src', '/public/web/images/choose.png');
+				//结算数量
+				$('#spsTotalNo').text($('.sps-shopping-car-checkbox').length);
+				//价格计算
+				var hideTotalPrice = 0;
+				for(var i = 0; i < $('.sps-shopping-car-checkbox').length; i++) {
+					var price = document.getElementsByClassName('sps-per-price')[i].innerText;
+					var num = document.getElementsByClassName('sps-pom-mid')[i].innerText;
+					hideTotalPrice += price * num;
+				}
+				$('#spsTotalPrice').text(hideTotalPrice.toFixed(2));
+			} else { //全不选
+				checked = 0;
+				$(this).attr('src', '/public/web/images/no_choose.png');
+				$('.sps-shopping-car-checkbox').attr('src', '/public/web/images/no_choose.png');
+				//结算数量
+				$('#spsTotalNo').text('0');
+				//价格计算
+				$('#spsTotalPrice').text('0.00');
+			}
+		})
+		//编辑-完成按钮
+		$('#edit').on('click', function() {
+			if($('#edit').text() == '编辑') {
+				$('#edit').find('a').text('完成');
+				$('.footer').addClass('hide');
+				$('.sps-shopping-car-total').addClass('hide');
+				$('.sps-shopping-car-edit-bottom').removeClass('hide');
+			} else {
+				$('#edit').find('a').text('编辑');
+				$('.footer').removeClass('hide');
+				$('.sps-shopping-car-total').removeClass('hide');
+				$('.sps-shopping-car-edit-bottom').addClass('hide');
+			}
+		})
+		//删除
+		$('#delete').click(function() {
+			var cartId = '';
+			var cart = document.getElementsByClassName('sps-shopping-car-checkbox');
+			for(var i = 0; i < cart.length; i++) {
+				if(cart[i].getAttribute('src') == '/public/web/images/choose.png') {
+					cartId += cart[i].getAttribute('id') + ',';
+				}
+			}
+			cartId = cartId.substr(0, cartId.length - 1);
+			var id = '{%$user_info.id%}';
+			$.post('api/index.php?ctl=cart&act=do_del_from_cart', {
+				'id': id,
+				'cart_id': cartId
+			}, function(data) {
+				if(data) {
+					var obj = eval('(' + data + ')');
+					if(obj.status == true) {
+						window.location.href = "index.php?ctl=mall&act=cart_detail";
+						$('#edit').find('a').text('完成');
+						$('.footer').addClass('hide');
+						$('.sps-shopping-car-total').addClass('hide');
+						$('.sps-shopping-car-edit-bottom').removeClass('hide');
+					} else {
+						layer.msg(obj.msg, function() {
+
+						});
+					}
+				} else {
+					alert('服务器返回一个错误');
+				}
+			})
+		})
+		/*结算*/
+		$('.sps-pay-order-confirmbtn').addClass('sps-confirmbtn-invalid');
+		$('.sps-pay-order-confirmbtn').attr('disabled', true);
+		$('.sps-user-deal').click(function() {
+			if($('.sps-user-deal').hasClass('mui-icon-checkmarkempty')) {
+				$('.sps-user-deal').removeClass('mui-icon-checkmarkempty wwt_select_address');
+				$('.sps-pay-order-confirmbtn').addClass('sps-confirmbtn-invalid');
+				$('.sps-pay-order-confirmbtn').attr('disabled', true)
+			} else {
+				$('.sps-user-deal').addClass('mui-icon-checkmarkempty wwt_select_address');
+				if($('.sps-pay-credits').hasClass('mui-icon-checkmarkempty')) {
+					$('.sps-pay-order-confirmbtn').removeClass('sps-confirmbtn-invalid');
+					$('.sps-pay-order-confirmbtn').attr('disabled', false)
+				}
+			}
+		})
+		$('.back').click(function() {
+			$('.sps-user-deal').removeClass('mui-icon-checkmarkempty wwt_select_address');
+			$('.sps-pay-order-confirmbtn').addClass('sps-confirmbtn-invalid');
+			$('.sps-pay-order-confirmbtn').attr('disabled', true)
+			$('.sps-shopping-car').removeClass('hide');
+			$('.sps-pay-order').addClass('hide');
+			window.localStorage.clear();
+		})
+		var nowP = '{%$price%}';
+		$('#nowPrice').text(parseFloat(nowP).toFixed(2));
+		$('#jiesuan').click(function() {
+			if($('#spsTotalNo').text() == 0) {
+				alert('请选择一种商品');
+			} else {
+				$('.sps-shopping-car').addClass('hide');
+				$('.sps-pay-order').removeClass('hide');
+				window.localStorage.setItem('needPay', $('#spsTotalPrice').text());
+				$('#spsNeedPay').text(window.localStorage.needPay);
+				$('#spsPresent').text(($('#spsNeedPay').text() / nowP).toFixed(2));
+			}
+		})
+		$('#confirmPay').click(function() {
+			if($('#receivePayer').text() == '' || $('#contact').text() == '' || $('#receiveAddr').text() == '') {
+				alert('请输入地址');
+			} else {
+				$('.sps-input-pwd').removeClass('hide');
+			}
+		})
+		$('.sps-pwd-close span').click(function() {
+			$('.sps-input-pwd').addClass('hide');
+			var txts = document.getElementsByClassName('sps-pwd-word');
+			for(var i = 0; i < txts.length; i++) {
+				txts[i].value = '';
+			}
+		})
+		/*更换收货地址*/
+		var thisURL = document.URL;
+		var getval = thisURL.split('&');
+		getval = getval[getval.length - 1];
+		showval = getval.split('=');
+		if(showval[0] == 'addr') {
+			if(showval[1] == 2) {
+				$('.sps-shopping-car').addClass('hide');
+				$('.sps-pay-order').removeClass('hide');
+				$('#spsNeedPay').text(window.localStorage.needPay);
+			}
+		}
+	</script>
+
+</html>

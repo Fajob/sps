@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="public/css/mui.min.css">
+    	<script src="/public/js/jquery-2.1.4.min.js"></script>
+    	<script src="/public/js/layer/layer.js"></script>
+    	<script src="/public/js/wwt_style.js"></script>
+		<link rel="stylesheet" type="text/css" href="public/css/media-100.css"/>
+		<link rel="stylesheet" type="text/css" href="public/css/login-style.css"/>
+		<link rel="stylesheet" type="text/css" href="public/css/wwt_style.css"/>
+	</head>
+	<style type="text/css">
+		.sps-save-wallet-status{
+			padding-top: 1px;
+			border-top: 9px solid #efefef;
+		}
+		.sps-initiative-spschain .sps-pay-out-2dcode {
+		    background-color: #f7f7f7;
+		}
+	</style>
+	<body>
+		<div class="nav">
+			<a href="javascript:history.back(-1)" class="back"></a>
+			SPS链兑换积分
+			<a href="jivascript:;" class="right">
+				
+			</a>
+		</div>
+		<div class="wwt_fb_dd" style="border-top: 5px solid #efefef;">
+			<div class="wwt_fb_zong">
+				<p style="width: 100%;height: 45px;line-height: 45px;color: #333;margin-bottom: 0;padding: 0px 20px;border-bottom: 1px solid #ddd;">
+					可用余额: <span style="color: #ff7d02;">{%$user_info.cz_chain%}</span>
+				</p>
+				<div class="wwt_fb_con">
+					<form class="form">
+						<p>当前价格: <span>{%$price%}</span></p>
+						<input type="hidden" name="coin_price" value="{%$price%}"/>
+						<p>兑换数额: <input name="num" class="num" type="text" placeholder="请输入兑换数额"/></p>
+						<p>折合积分: <span class="zh_jf"></span></p>
+						<input type="hidden" id="id" name="id" value="{%$user_info.id%}"/>
+						<p>交易密码: <input type="password" name="user_pwd_trade" placeholder="请输入交易密码"/></p>
+					</form>
+					<p style="height: 45px;margin-top: 30px;"><button type="button" class="dh_btn">兑换</button></p>
+				</div>
+			</div>
+		</div>
+		<div class="sps-initiative-spschain">
+			
+			<div style="margin-top: -10px;" class="sps-pay-in-detail">
+				<div class="sps-pay-in-detail-title">
+					<img src="public/web/images/detail.png" />
+					<span>兑换明细</span>
+				</div>
+				<div class="sps-pay-in-detail-cont">
+					<table>
+						<thead>
+							<tr>
+								<td>日期</td>
+								<td>数额</td>
+								<td>积分</td>
+							</tr>
+						</thead>
+						<tbody>
+							{%foreach from=$data.data item=row%}
+							<tr>
+								<td class="time">{%$row.time%}</td>
+								<td>{%$row.base_num%}</td>
+								<td>{%$row.num%}</td>
+							</tr>
+							{%/foreach%}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		//兑换积分
+		$(document).on("click",".dh_btn",function(){
+			var obj = $(".form").serialize();
+			$.post("api/index.php?ctl=translate&act=do_translate_sps_to_credits",obj,function(data){
+				if(data){
+					var _data = eval("("+data+")");
+					if(_data.status == true){
+						alert(_data.msg);
+						window.location.reload();
+					}else{
+						layer.msg(_data.msg, function(){
+					
+						});
+					}
+				}
+			})
+		})
+		
+		//计算折合积分
+		$(".num").blur(function(){
+			var price = {%$price%};
+			var num = $(this).val();
+			var zh_jf = price*num;
+			$(".zh_jf").text(zh_jf);
+		})
+		var p = 0;
+		var id = $("#id").val();
+		$(window).on('scroll', function() {
+			if($(window).scrollTop() >= $(document).height() - $(window).height()) {
+				p++;
+				$.post('api/index.php?ctl=translate&act=get_sps_to_credits_log' ,{'p':p,"id":id}, function(data) {
+					if(data) {
+						var obj = eval('(' + data + ')')
+						if(obj.status == true) {
+							var _data = obj.data.data;
+							for(var i = 0;i<_data.length;i++){
+								$tr = $("<tr><td class='time'>"+date(_data[i].time)+"</td><td>"+_data[i].base_num+"</td><td>"+_data[i].num+"</td></tr>");
+								$tr.appendTo($("tbody"));
+								/*$(".time").text(date(_data[i].time));*/
+							}
+						} else {
+							layer.msg(obj.msg, function() {
+
+							});
+						}
+					} else {
+						alert('服务器返回一个错误')
+					}
+				})
+			}
+		})
+		var time = document.getElementsByClassName('time');
+		for(var i=0;i<time.length;i++){
+			time[i].innerText = date(time[i].innerText);
+		}
+		
+	</script>
+</html>

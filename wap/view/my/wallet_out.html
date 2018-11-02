@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="public/css/mui.min.css">
+    	<script src="/public/js/jquery-2.1.4.min.js"></script>
+    	<script src="/public/js/layer/layer.js"></script>
+    	<script src="/public/js/wwt_style.js"></script>
+		<link rel="stylesheet" type="text/css" href="public/css/media-100.css"/>
+		<link rel="stylesheet" type="text/css" href="public/css/login-style.css"/>
+		<link rel="stylesheet" type="text/css" href="public/css/wwt_style.css"/>
+	</head>
+	<style type="text/css">
+		.sps-save-wallet-status{
+			padding-top: 1px;
+			border-top: 9px solid #efefef;
+		}
+		.sps-initiative-spschain .sps-pay-out-2dcode {
+		    background-color: #f7f7f7;
+		}
+	</style>
+	<body>
+		<div class="nav">
+			<a href="javascript:history.back(-1)" class="back"></a>
+			SPS链转出
+			<a href="jivascript:;" class="right">
+				
+			</a>
+		</div>
+		<div class="wwt_fb_dd" style="border-top: 5px solid #efefef;">
+			<div class="wwt_fb_zong">
+				<p style="width: 100%;height: 45px;line-height: 45px;color: #333;margin-bottom: 0;padding: 0px 20px;border-bottom: 1px solid #ddd;">
+					可用余额: <span style="color: #ff7d02;">{%$user_info.cz_chain%}</span>
+				</p>
+				<div class="wwt_fb_con">
+					<form class="zc">
+					<p style="margin-top: 10px;">转出账户: <input name="to_phone_number" type="text" placeholder="请输入对方手机号码"/></p>
+					<p style="margin-top: 10px;">转出数额: <input name="num" type="text" placeholder="请输入转出数额"/></p>
+					<p style="margin-top: 10px;">交易密码: <input name="trade_pwd" type="password" placeholder="请输入交易密码"/></p>
+					<input type="hidden" id="id" name="id" value="{%$user_info.id%}"/>
+					<input type="hidden" name="code" value=""/>
+					<p style="height: 45px;margin-top: 30px;"><button type="button" class="zc_btn">确认转出</button></p>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="sps-initiative-spschain">
+			
+			<div style="margin-top: -10px;" class="sps-pay-in-detail">
+				<div class="sps-pay-in-detail-title">
+					<img src="public/web/images/detail.png" />
+					<span>互转明细</span>
+				</div>
+				<div class="sps-pay-in-detail-cont">
+					<table>
+						<thead>
+							<tr>
+								<td>日期</td>
+								<td>类型</td>
+								<td>用户</td>
+								<td>数量</td>
+							</tr>
+						</thead>
+						<tbody>
+							{%foreach from=$data.data item=row%}
+							<tr>
+								<td class="time">{%$row.time%}</td>
+								<td>{%if $row.to_id eq $user_info.phone_number%}转入{%else%}转出{%/if%}</td>
+								<td>{%$row.to_id%}</td>
+								<td>{%$row.num%}</td>
+							</tr>
+							{%/foreach%}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		//兑换积分
+		$(document).on("click",".zc_btn",function(){
+			var obj = $(".zc").serialize();
+			$.post("api/index.php?ctl=translate&act=do_translate_sps",obj,function(data){
+				if(data){
+					var _data = eval("("+data+")");
+					if(_data.status == true){
+						alert(_data.msg);
+						window.location.reload();
+					}else{
+						layer.msg(_data.msg, function(){
+					
+						});
+					}
+				}
+			})
+		})
+		var time = document.getElementsByClassName('time');
+		for(var i=0;i<time.length;i++){
+			time[i].innerText = date(time[i].innerText);
+		}
+//		下拉加载
+		var p = 1;
+		var id = $("#id").val();
+		$(window).on('scroll', function() {
+			if($(window).scrollTop() >= $(document).height() - $(window).height()) {
+				p++;
+				$.post('api/index.php?ctl=translate&act=get_translate_sps_log' ,{'p':p,"id":id}, function(data) {
+					if(data) {
+						var obj = eval('(' + data + ')')
+						if(obj.status == true) {
+							var _data = obj.data.data;
+							for(var i = 0;i<_data.length;i++){
+								$tr = $("<tr><td class='time'>"+date(_data[i].time)+"</td><td>{%if "+_data[i].to_id+" eq $user_info.phone_number%}转入{%else%}转出{%/if%}</td><td>"+_data[i].to_id+"</td><td>"+_data[i].num+"</tr>");
+								$tr.appendTo($("tbody"));
+								/*$(".time").text(date(_data[i].time));*/
+							}
+						} else {
+							layer.msg(obj.msg, function() {
+
+							});
+						}
+					} else {
+						alert('服务器返回一个错误')
+					}
+				})
+			}
+		})
+	</script>
+</html>

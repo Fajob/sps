@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="/public/css/style.css"/>
+		<link rel="stylesheet" href="/public/css/layui.css" />
+		<script src="/public/js/jquery-2.1.4.min.js"></script>
+		<script src="/public/js/layui.js"></script>
+		<script src="/public/js/style.js"></script>
+	</head>
+	<body style="width: 100%;min-width: 1300px;max-width: 100%;">
+		<div class="indexCon">
+			<div class="nav">
+				<div class="logo"><img src="/public/images/logo_a.png"/></div>
+				<div class="info">
+					<!--<p style="color: #666;line-height: 40px;font-size:17px">欢迎 <span> 李小二 </span> [HD88]</p>
+					<p style="color: #333;font-size: 14px;line-height: 25px;"> <span> 2018-02-07 18:06 </span> PM</p>-->
+				</div>
+				<div class="right">
+					<button type="button" onclick="back()">退出</button>
+				</div>
+			</div>
+			<div class="leftNav">
+				
+				<ul>
+					<li class="title">
+						<p>
+							<a href="m.php?ctl=index">首页</a>
+							<a href="m.php?ctl=user">会员中心</a>
+							<a href="m.php?ctl=incharge">会员充值</a>
+							<a href="m.php?ctl=order">订单中心</a>
+							<a href="m.php?ctl=deal">商品管理</a>
+							<a href="m.php?ctl=type">分类管理</a>
+							<a href="m.php?ctl=conf&act=navagation" class="hui">系统设置</a> 
+						</p>
+					</li>
+					
+					
+				</ul>
+				
+			</div>
+			<div class="rightCon">
+				<div class="hyzx">
+					<div class="xt_nav">
+						<a class="dh_sz" href="m.php?ctl=conf&act=navagation">导航栏设置</a>
+						<a class="gg_sz" href="m.php?ctl=conf&act=notice">公告设置</a>
+						<a class="cs_sz" href="m.php?ctl=conf&act=argument">参数设置</a>
+						<a class="banner_sz" href="m.php?ctl=conf&act=carousel">轮播图设置</a>
+						<a class="k_sz" href="m.php?ctl=conf&act=kline">K线设置</a>
+						<a class="k_sz xt_nav_active" href="m.php?ctl=conf&act=share">分享设置</a>
+						<a class="k_sz" href="m.php?ctl=log">系统日志</a>
+					</div>
+					<div class="xt_con">
+						<!--导航内容-->
+						
+						<div class="dh_con">
+							<!--<p class="add_sp">
+								<button type="button" class="add_btn">
+									<i class="layui-icon">&#xe654;</i>添加轮播图片
+								</button>
+							</p>-->
+							<table border="0">
+								<tr>
+									<th>编号</th>
+									<th>二维码</th>
+									<th>链接</th>
+									<th>操作</th>
+								</tr>
+								{%foreach from=$data item=item1%}
+								<tr>
+									<td class="id">{%$item1.id%}</td>
+									<td>
+										<span>
+											<img src="{%$item1.img%}"/>
+											<img class="img" src="" alt="" />
+											<input type="file" class="file" disabled="true"/>
+										</span>
+									</td>
+									<td><input class="link" type="text" value="{%$item1.link%}" disabled="true"/></td>
+									<td>
+										<button class="bj_btn">编辑</button>
+										<button class="wc_btn none">确认</button>
+									</td>
+								</tr>
+								{%/foreach%}
+							</table>
+						</div>
+						
+					</div>
+					
+				</div>
+			</div>
+		</div>
+		
+	</body>
+	<script>
+	//编辑轮播图信息
+	$(".bj_btn").click(function(e){
+		edit(e);
+	});
+	//编辑轮播图更换图片
+	$(".file").change( add_img );
+	//分享提交
+	$(".wc_btn").click(function(){
+		var id = $(this).parents("tr").find(".id").text();
+		var links = $(this).parents("tr").find(".link").val();
+		var img = $(this).parents("tr").find(".img").attr("src");
+		$.post("m.php?ctl=conf&act=do_update_share",{"id":id,"link":links,"img":img},function(data){
+			if(data){
+				var _data = eval("("+data+')');
+				if(_data.status == true){
+					alert(_data.msg);
+					window.location.reload();
+				}else{
+					alert(_data.msg);
+					return false;
+				}
+			}
+		})
+	})
+	
+	</script>
+</html>

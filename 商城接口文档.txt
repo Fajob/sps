@@ -1,0 +1,672 @@
+ios Android相关接口，wap版直接调用此接口
+
+1.会员相关基础接口
+
+	（1）会员登录(ok)
+	POST：api/index.php?ctl=user&act=do_login
+	body：phone_number=xxx
+	      user_pwd=xxx
+	返回结果：
+	{
+		"ststus":xxx   （true or false）为true表示登录成功，false表示登录失败
+		"msg":xxxx      
+	}	
+
+	（2）会员注册（）
+	POST：api/index.php?ctl=user&act=do_register
+	body：phone_number=xxx
+	      user_pwd=xxx
+	      invite_code=xxx
+	      user_pwd_trade=xxx
+	      code=xxx       (短信验证码，暂不验证)
+	返回结果：
+	{
+		"ststus":xxx   （true or false）为true表示注册成功，false表示注册失败
+		"msg":xxxx      
+	}
+
+	（3）会员登出（ok）
+	GET：api/index.php?ctl=user&act=do_loginout
+	返回结果
+	{
+		"ststus":xxx   （true or false）为true表示退出成功，false表示退出失败
+		"msg":xxxx      
+	}
+	
+
+	（4）修改密码（ok）
+	POST：api/index.php?ctl=user&act=do_modify_pwd
+	body：id=xxxx
+	      old_pwd=xxx
+	      new_pwd=xxx
+	      new_pwd_confirm=xxx
+	返回结果：
+	{
+		"ststus":xxx   （true or false）为true表示修改成功，false表示修改失败
+		"msg":xxxx      
+	}
+	（5）修改交易密码
+	POST：api/index.php?ctl=user&act=do_modify_pwd_trade
+	body：id=xxxx
+	      code=xxx
+	      new_pwd_trade=xxx
+	      new_pwd_trade_confirm=xxx
+	返回结果：
+	{
+		"ststus":xxx   （true or false）为true表示修改成功，false表示修改失败
+		"msg":xxxx      
+	}
+
+	（6）修改用户名
+	POST：api/index.php?ctl=user&act=do_modify_user_name
+	body：id=xxxx
+	      new_user_name=xxx
+	返回结果：
+	{
+		"ststus":xxx   （true or false）为true表示修改成功，false表示修改失败
+		"msg":xxxx      
+	}
+	（7）重置登录密码
+	POST：api/index.php?ctl=user&act=do_reset_pwd
+	body：phone_number=xxx
+	      code=xxx
+	      user_pwd=xxx
+	      user_pwd_confirm=xxx
+	返回结果：
+	{
+		"ststus":xxx   （true or false）为true表示重置成功，false表示重置失败
+		"msg":xxxx      
+	}
+	
+
+	（8）会员详情（ok）
+	POST：api/index.php?ctl=user&act=get_user_info
+	body：id=xxx
+	返回结果：
+	{
+		"ststus":xxx,   （true or false）为true表示重置成功，false表示重置失败
+		"msg":xxxx, 
+		"user_info":{"id":xx,"user_name":xxx,...}     
+	}
+
+	（9）用户图像上传（ok）
+	POST：api/index.php?ctl=image&act=user_avastar
+	body：id=xxx	  (用户的id)
+	      image=xxxx （图片的内容）
+	返回结果：
+	{
+		"status":xxx(true or false)
+		"msg":"xxxxx"
+	}
+
+	（10）添加用户地址（ok）
+	POST：api/index.php?ctl=user&act=do_add_address
+	body：id=xxx		（用户id）
+	      address=xxx	（用户地址）
+	      address1=xxx	（用户地址1）
+	      user_name=xxx	（收件人姓名）
+	      user_phone=xxx	（收件人姓名）
+	      is_default=xxx	（是否是默认地址）
+	返回结果：
+	{
+		"status":xxx(true or false)
+		"msg":"xxxxx"
+	}
+
+
+	（11）删除用户地址（ok）
+	POST：api/index.php?ctl=user&do_del_address
+	body：id=xxx		（用户id）
+	      address_id=xxx	（地址id）
+	返回结果：
+	{
+		"status":xxx(true or false)
+		"msg":"xxxxx"
+	}
+
+	（12）更新用户地址（ok）	
+	POST：api/index.php?ctl=user&act=do_update_address
+	body：id=xxx		（用户id）
+	      address_id=xxx	（地址id）
+	      address=xxx	（用户地址）
+	      address1=xxx	（用户地址1）
+	      user_name=xxx	（收件人姓名）
+	      user_phone=xxx	（收件人姓名）
+	      is_default=xxx	（是否是默认地址）
+	返回结果：
+	{
+		"status":xxx(true or false)
+		"msg":"xxxxx"
+	}
+
+	（13）获取用户地址
+	POST：api/index.php?ctl=user&act=get_address&is_default=1(is_default 可选)
+	body：id=xxx		（用户id）
+	返回结果：
+	{
+		"status":xxx(true or false)
+		"msg":"xxxxx"
+		"data":[{"id":xxx,"address_id":xxx,"address":xxx,"address1":xxx,"user_name":xxx,"user_phone":xxx,"is_default":xxx}{}]
+	}
+
+	（14）添加收款方式
+	POST：api/index.php?ctl=user&act=do_add_payment
+	body：id=xxx		（用户id）
+	      type=xxx		（类型）
+	      user_name=xxx	（姓名）
+	      id_num=xxx	（卡号或支付宝号码）
+	      extra=xxx		（银行卡开户行信息）
+	      extra1=xxx	（银行卡开户行信息）
+	      is_default=xxx	（是否是默认收款方式）
+	返回结果：
+	{
+		"status":xxx(true or false)
+		"msg":"xxxxx"
+	}
+	（15）删除收款方法
+	POST：api/index.php?ctl=user&act=do_del_payment
+	body：id=xxx		（用户id）
+	      payment_id=xxx	（付款方式id）
+	返回结果：
+	{
+		"status":xxx(true or false)
+		"msg":"xxxxx"
+	}
+	（16）更新收款方式
+	POST：api/index.php?ctl=user&act=do_update_payment
+	body：id=xxx		（用户id）
+	      payment_id=xxx	（付款方式id）
+	      type=xxx		（类型）
+	      user_name=xxx	（姓名）
+	      id_num=xxx	（卡号或支付宝号码）
+	      extra=xxx		（银行卡开户行信息）
+	      extra1=xxx	（银行卡开户行信息）
+	      is_default=xxx	（是否是默认收款方式）
+	返回结果：
+	{
+		"status":xxx(true or false)
+		"msg":"xxxxx"
+	}
+	（17）获取收款方式
+	POST：api/index.php?ctl=user&act=get_payment
+	body：id=xxx		（用户id）
+	返回结果：
+	{
+		"status":xxx(true or false)
+		"msg":"xxxxx"
+		"data":[{"id":xxx,"payment_id":xxx,"type":xxx,"user_name":xxx,"id_num":xxx,"extra":xxx,"is_default":xxx}{}]
+	}
+
+	（18）获取用户信息
+	POST：api/index.php?ctl=user&myinfo
+	body：id=xxx		（用户id）
+	返回结果：
+	{
+		"status":xxx(true or false)
+		"msg":"xxxxx"
+		"data":{"user_info":{},"coin_price":xxx,"order_num":xxx}
+	}
+
+	（19）业绩明细
+	POST：api/index.php?ctl=user&yjmx
+	body：id=xxx		（用户id）
+	返回结果：
+	{	
+		"status":true,
+		"data":{"user_info":{"id":"25","user_name":"","user_pwd":"e10adc3949ba59abbe56e057f20f883e","user_pwd_trade":"4607e782c4d86fd5364d7e4508bb10d9","user_avatar":null,"user_level":"0","p_id":"23","phone_number":"13544172376","consume_credits":"0","static_reward":"0","dynamic_reward":"0","cz_chain":"0","sc_chain":"0","real_name":null,"is_valid":"1","invite_code":"14172376"},
+			"p_user_info":{"id":"23","user_name":"Setwwweq","user_pwd":"e10adc3949ba59abbe56e057f20f883e","user_pwd_trade":"e10adc3949ba59abbe56e057f20f883e","user_avatar":"public\/img\/avastar\/1526968952219644.png","user_level":"0","p_id":"1","phone_number":"13544172374","consume_credits":"0","static_reward":"0","dynamic_reward":"0","cz_chain":"0","sc_chain":"0","real_name":null,"is_valid":"1","invite_code":"14172374"},
+			"direct_users_detail":[{"rainbow_consume":0,"rainbow_consume_daily":0,"user_info":{"id":"26","user_name":"123456","user_pwd":"e10adc3949ba59abbe56e057f20f883e","user_pwd_trade":"e10adc3949ba59abbe56e057f20f883e","user_avatar":null,"user_level":"3","p_id":"25","phone_number":"13526733261","consume_credits":"1000","static_reward":"0","dynamic_reward":"0","cz_chain":"0","sc_chain":"0","real_name":"","is_valid":"1","invite_code":"16733261"}}]}}
+
+
+	（20）获取系统公告，导航栏，轮播栏等配置详情
+	POST：api/index.php?ctl=user&act=appconf
+	body：id=xxx
+	返回结果：
+	{	
+		"status":true,
+		"data":{"notice":[{}{}],
+			"navigation":[{},{}],
+			"carousel";[{},{}]
+			}
+	}
+
+
+	
+
+2.会员转账相关（服务器记录详细的转账记录）
+	（1）消费积分互转
+	POST：api/index.php?ctl=translate&act=do_translate_consume_credits
+	body：id=xxx			转出id
+	      trade_pwd=xxx		用户密码
+	      code=xxx			短信验证码（暂时不验证）
+	      to_phone_number=xxx	转入到手机号
+	      num=xxx			转账数目
+	返回结果：
+	{
+		"ststus":xxx   （true or false）为true表示转账成功，false表示转账失败
+		"msg":xxxx      
+	}
+
+
+	（2）消费积分转账记录,分页展示
+	POST：api/index.php?ctl=translate&act=get_consume_credits_log
+	body：id=xxxx
+	      p=xxxx
+	返回结果：
+	{
+		"ststus":xxx   （true or false),false则没有data
+		"msg":xxxx
+		"data":{"p":xxx,"total_pages":xxx,"data":[{"time":xxx,"from_id":xxx,"to_id":xxx,"num":xxx,"msg":xxx},{...}{...}...]}     
+	}
+
+	（3）sps转账
+	POST：api/index.php?ctl=translate&act=do_translate_sps
+	body：id=xxx			转出id
+	      trade_pwd=xxx		用户密码
+	      code=xxx			短信验证码（暂时不验证）
+	      to_phone_number=xxx	转入到手机号
+	      num=xxx			转账数目
+	返回结果：
+	{
+		"ststus":xxx   （true or false）为true表示转账成功，false表示转账失败
+		"msg":xxxx      
+	}
+
+	（4）sps转账记录,分页展示
+	POST：api/index.php?ctl=translate&act=get_translate_sps_log
+	body：id=xxxx
+	      p=xxxx
+	返回结果：
+	{
+		"ststus":xxx   （true or false),false则没有data
+		"msg":xxxx
+		"data":{"p":xxx,"total_pages":xxx,"data":[{"time":xxx,"from_id":xxx,"to_id":xxx,"num":xxx,"msg":xxx},{...}{...}...]}     
+	}
+
+	（5）sps转为积分
+
+	POST：api/index.php?ctl=translate&act=do_translate_sps_to_credits
+	body：id=xxx
+	      num=xxx
+	      coin_price=xxx
+	      user_pwd_trade=xxx
+	返回结果：
+	{
+		"ststus":xxx   （true or false）为true表示转账成功，false表示转账失败
+		"msg":xxxx      
+	}
+
+	（6）sps转为积分记录	
+	POST：api/index.php?ctl=translate&act=get_sps_to_credits_log
+	body：id=xxxx
+	      p=xxxx
+	返回结果：
+	{
+		"ststus":xxx   （true or false),false则没有data
+		"msg":xxxx
+		"data":{"p":xxx,"total_pages":xxx,"data":[{"time":xxx,"from_id":xxx,"to_id":xxx,"num":xxx,"msg":xxx},{...}{...}...]}     
+	}
+	
+		
+	
+3.购物相关接口
+	（1）获取商城商品
+	GET：api/index.php?ctl=order&act=get_deal_list&p=1&key=xxx&key1=xxx  key(可选，按关键字搜索)   key1（可选）key1=xl(销量)   xp(新品)  jg1（价格降序） jg2（价格升序）
+	返回数据：
+	{
+		'status' : true,
+		"msg" : "获取成功"，
+		"deal_list" : [{"id":xxx,"deal_name":xxx,"img":xxx,"current_price（售价）":xxx,"breaf（简介）":xxxx,"stock(库存)":xxxx},{}{}]
+	}
+
+	（2）获取单个商品的详情
+	GET：api/index.php?ctl=order&act=get_deal&deal_id=xxx
+	返回数据：
+	{
+		'status' : true,
+		"msg" : "获取成功"，
+		"deal_list" : {"id":xxx,"deal_name":xxx,"img":xxx,"current_price（售价）":xxx,"breaf（简介）":xxxx,"stock(库存)":xxxx,...}
+	}
+
+	（3）获取某个商品赠送的sps
+	POST：api/index.php?ctl=order&act=get_return_sps
+	body：id=xxx
+	      deal_id=xxxx
+	返回数据：
+	{
+		"status" : true,
+		"return_sps":xxx
+	}
+
+	（4）提交付款
+	POST：api/index.php?ctl=order&act=do_payment
+	body：id=xxx			（用户id）
+	      deal_id=xxx		（商品id）
+	      deal_price=xxx		（商品价格）
+	      amount=xxxx		（商品数目）	
+	      return_sps=xxx		（返多少sps）
+	      address_id=xxxx
+	      user_pwd_trade=xxx	（交易密码）
+	      
+	      body里面包含商品的全部信息（从deal_list返回的该商品的所有数据）
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"msg":xxxx      
+	}	
+	
+		
+	订单表里面包含该订单的所有详细信息
+	（5）获取订单详细列表
+	POST：api/index.php?ctl=order&act=get_order_list&p=xxx
+	body：id=xxx
+	      order_status=xxx(订单状态（0：未付款；1：已付款未发货；2：已付款已发货）;3:已收货)
+	返回数据：
+	{
+		'status' : true,
+		"msg" : "获取成功"，
+		"order_list" : {["id":xxx,"deal_name":xxx,"img":xxx,"current_price（售价）":xxx,"breaf（简介）":xxxx,"stock(库存)":xxxx,"time":xxx,],[],[]...})
+	}
+
+	（6）删除订单
+	POST：api/index.php?ctl=order&act=do_del_order
+	body：id=xxx
+	      order_id=xxxx(订单id)
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"msg":xxxx      
+	}
+
+	（7）确认收货
+	POST：api/index.php?ctl=order&act=do_receive_package
+	body：id=xxx
+	      order_id=xxxx(订单id)
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"msg":xxxx      
+	}
+		
+	（8）加入购物车
+	POST：api/index.php?ctl=cart&act=do_add_to_cart
+	body：id=xxx
+	      deal_id=xxx
+	      num=xxx
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"msg":xxxx      
+	}
+
+	购物车表里面包含该订单的的时间id等简略信息，商品的详细信息需要从deal表获取
+	（9）获取购物车详情
+	POST：api/index.php?ctl=cart&act=get_cart_list
+	body：id=xxx
+	返回数据：
+	{
+		'status' : true,
+		"msg" : "获取成功"，
+		"cart_list" : [{"cart_id":xxx,"id":xxx,"deal_name":xxx,"img":xxx,"current_price（售价）":xxx,"breaf（简介）":xxxx,"stock(库存)":xxxx,"time":xxx},{},{}...])
+	}
+
+	（10）删除购物车内容
+	POST：api/index.php?ctl=cart&act=do_del_from_cart
+	body：id=xxx
+	      cart_id=xxx,xxx,xxx
+	
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"msg":xxxx      
+	}
+
+	（11）更新购物车内容
+	POST：api/index.php?ctl=cart&act=do_update_cart
+	body：id=xxxx
+	      cart_id=xxx
+	      num=xxx
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"msg":xxxx      
+	}
+	      
+
+	（12）购物车提交付款
+	POST：api/index.php?ctl=cart&act=cart_do_payment
+	body：id=xxx			（用户id）
+	      cart_id=xxx,xxx,xxx	（购物车产品id)
+	      address_id=xxxx
+	      user_pwd_trade=xxx	（交易密码）
+	      
+	      body里面包含商品的全部信息（从deal_list返回的该商品的所有数据）
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"msg":xxxx      
+	}
+
+
+4.会员获取收益相关接口
+	（1）锁仓
+	POST：api/index.php?ctl=sc&act=do_sc
+	body：id=xxxx		（用户id）
+	      user_pwd=xxx	（用户交易密码）
+	      num=xxx		（锁仓数目）
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"msg":xxxx      
+	}
+	（2）锁仓记录,分页展示
+	POST：api/index.php?ctl=sc&act=get_sc_list
+	body：id=xxxx	（用户id）
+	      p=xxx	（第几页）
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"msg":xxxx   
+		"data":{"p":xxx,"total_pages":xxx,"data":[{"time":xxx,""},{},{},...] } 
+	}
+	
+
+	（3）静态收益记录,分页展示
+	POST：api/index.php?ctl=sc&act=get_static_reward_list
+	body：id=xxxx	（用户id）
+	      p=xxx	（第几页）
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"msg":xxxx   
+		"data":{"p":xxx,"total_pages":xxx,"data":[{"time":xxx,""},{},{},...] }  
+	}	
+
+	（4）动态收益记录,分页展示
+	POST：api/index.php?ctl=sc&act=get_dynamic_reward_list
+	body：id=xxxx	（用户id）
+	      p=xxx	（第几页）
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"msg":xxxx   
+		"data":{"p":xxx,"total_pages":xxx,"data":[{"time":xxx,""},{},{},...] }   
+	}
+
+	（5）获取返现记录,分页展示
+	POST：api/index.php?ctl=sc&act=get_reback_list
+	body：id=xxxx	（用户id）
+	      p=xxx	（第几页）
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"msg":xxxx   
+		"data":{"p":xxx,"total_pages":xxx,"data":[{"time":xxx,""},{},{},...] }  
+	}
+
+	（6）获取消费获得的sps记录
+	POST：api/index.php?ctl=sc&act=get_consume_sps_list
+	body：id=xxxx	（用户id）
+	      p=xxx	（第几页）
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"msg":xxxx   
+		"data":{"p":xxx,"total_pages":xxx,"data":[{"time":xxx,""},{},{},...] }  
+	}
+
+	（7）获取当日总收益
+
+	POST：api/index.php?ctl=sc&act=get_daily_total_reward
+	body：id=xxxx	（用户id）
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"total_reward":xxxx 
+	}
+
+5系统基础接口
+	（1）获取验证码接口
+	GET：verify.php
+	返回结果：验证码图片
+
+	（2）获取短信验证码接口
+	POST：sms.php?
+	body：phone_number=xxxx
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"msg":xxxx      
+	}
+
+6.c2c交易相关
+	（1）获取k线图
+	GET：api/index.php?ctl=trade&act=get_kline
+	返回结果:
+	{	
+		"status":xxx,
+		"msg":xxx,
+		"data":[{}{}]
+	}
+	（2）获取买单
+	POST：api/index.php?ctl=trade&act=get_buy_list
+	body：id=xxx
+	返回结果:
+	{	
+		"status":xxx
+		"msg":xxx
+		"data":[{},{},...]
+	}
+	（3）获取卖单
+	POST：api/index.php?ctl=trade&act=get_sale_list
+	body：id=xxx
+	返回结果:
+	{	
+		"status":xxx,
+		"msg":xxx,
+		"data":[{},{},...]
+	}
+
+	（4）下订单
+	POST：api/index.php?ctl=trade&act=do_pulish_order
+	body：id=xxx
+	      type=xxx(buy or sale)
+	      num=xxx
+	      price=xxx
+	      user_pwd_trade=xxx
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"msg":xxxx      
+	}
+	  
+
+	（5）购买
+	POST：api/index.php?ctl=trade&act=do_buy
+	body：id=xxx
+	      order_id=xxxx
+	      num=xxx
+	      price=xxx
+	      user_pwd_trade=xxx
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"msg":xxxx      
+	}
+
+	（6）出售
+	POST：api/index.php?ctl=trade&act=do_sale
+	body：id=xxx
+	      order_id=xxxx
+	      num=xxx
+	      price=xxx
+	      user_pwd_trade=xxx
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"msg":xxxx      
+	}
+	 
+	（7）确认收款
+	POST：api/index.php?ctl=trade&act=do_confirm_recieve
+	body：id=xxx
+	      order_id
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"msg":xxxx      
+	}
+
+	（8）确认付款
+	POST：api/index.php?ctl=trade&act=do_confirm_recieve
+	body：id=xxx
+	      order_id
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"msg":xxxx      
+	}
+
+	（9）撤销订单
+	POST：api/index.php?ctl=trade&act=do_cancel
+	body：id=xxx
+	      order_id
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"msg":xxxx      
+	}
+	（10）挂单记录
+	POST：api/index.php?ctl=trade&act=get_punish_list
+	body：id=xxx
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"msg":xxxx  
+		"data":[{},{},...]    
+	}
+
+	（11）交易记录
+	POST：api/index.php?ctl=trade&act=get_trade_list
+	body：id=xxx
+	返回结果：
+	{
+		"ststus":xxx   （true or false）
+		"msg":xxxx  
+		"data":[{},{},...]    
+	}
+	（12）获取当前币价
+
+	GET：api/index.php?ctl=trade&act=get_coin_price
+	返回结果：
+	{
+		"ststus":xxx   （true or false） 
+		"price":xxx    
+	}
+	
+
+
+
+	
+	
+

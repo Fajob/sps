@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	    <title>修改交易密码</title>
+	    <script src="/public/js/jquery-2.1.4.min.js"></script>
+		<script src="public/js/layer/layer.js"></script>
+	    <script src="/public/js/wwt_style.js"></script>
+	    <link href="/public/css/mui.min.css" rel="stylesheet"/>
+	    <link rel="stylesheet" href="/public/css/wwt_style.css" />
+	</head>
+	<style type="text/css">
+		ul:after{
+			height: 0 !important;
+		}
+		ul:before{
+			height: 0 !important;
+		}
+		ul{
+			border-bottom: 5px solid #efefef;
+			border-top: 5px solid #efefef;
+		}
+		.mui-navigate-right:after, .mui-push-left:after, .mui-push-right:after {
+		    font-family: Muiicons;
+		    font-size: 26px;
+		    line-height: 1;
+		    position: absolute;
+		    top: 50%;
+		    display: inline-block;
+		    -webkit-transform: translateY(-50%);
+		    transform: translateY(-50%);
+		    text-decoration: none;
+		    color: #bbb;
+		    -webkit-font-smoothing: antialiased;
+		}
+		.mui-table-view-cell:after {
+		    position: absolute;
+		    right: 0;
+		    bottom: 0;
+		    left: 0px;
+		    height: 1px;
+		    content: '';
+		    -webkit-transform: scaleY(.5);
+		    transform: scaleY(.5);
+		    background-color: #c8c7cc;
+		}
+		li{
+			font-size: 14px;
+			line-height: 40px;
+			position: relative !important;
+		}
+		li input{
+			text-align: left !important;
+		}
+		.huoqu{
+			float: left;
+			width: 33%;
+			text-align: center !important;
+			position: absolute !important;
+			right: 15px;
+			top: 15px;
+			border: none !important;
+			border-left: 1px solid #bbb !important;
+			outline: none !important;
+			border-radius: 0 !important;
+		}
+		.huoqu_no{
+			color: #00d1ff !important;
+		}
+	</style>
+	<body>
+		<div class="nav">
+			<a href="javascript:history.back(-1)" class="back"></a>
+			修改交易密码
+			<a href="javascript:;" class="right"></a>
+		</div>
+		<form id="trade_form" method="post">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					手机号
+					<input type="hidden" name="id" value="{%$user_info.id%}" />
+					<input type="text" class="wwt_mui_input" value="{%$user_info.phone_number%}" disabled="disabled"/>
+				</li>
+				<li class="mui-table-view-cell">
+					验证码
+					<input type="text" name="code"  class="wwt_mui_input" id="mobile_code" placeholder="短信验证码"/>
+					<input type="button" id="get_code" class="huoqu huoqu_no" value="获取验证码"/>
+				</li>
+				<li class="mui-table-view-cell">
+					交易密码
+					<input type="password" name="new_pwd_trade"  class="wwt_mui_input" placeholder="输入六位交易密码"/>
+				</li>
+				<li class="mui-table-view-cell">
+					确认密码
+					<input type="password" name="new_pwd_trade_confirm"  class="wwt_mui_input" placeholder="再次确认交易密码"/>
+				</li>
+			</ul>
+			<button type="button" class="sure_btn">确认</button>
+		</form>
+	</body>
+	<script>
+		//获取验证码
+		$(document).on("click","#get_code",function(){
+			var phone_number = {%$user_info.phone_number%};
+			$.ajax({
+				type:"post",
+				url:"sms.php?",
+				async:false,
+				data:"phone_number="+phone_number,
+				success:function(data){
+					if(data){
+					var obj = eval("("+data+")");
+					if(obj.status == true){
+						timing();
+					}else{
+						layer.msg(obj.msg,function(){
+							
+						})
+					}
+					}
+				}
+			});
+		})
+		//修改交易密码
+		$(document).on("click",".sure_btn",function(){
+			var obj = $("#trade_form").serialize();
+			$.post("api/index.php?ctl=user&act=do_modify_pwd_trade",obj,function(data){
+				if(data){
+					var _data = eval("("+data+")");
+					if(_data.status == true){
+						alert("修改成功")
+						window.location.href="index.php?ctl=setting"
+					}else{
+						layer.msg(_data.msg, function(){
+					
+						});
+					}
+				}
+			})
+		})
+	</script>
+</html>

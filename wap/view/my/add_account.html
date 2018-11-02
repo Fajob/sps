@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	    <title></title>
+	    <script src="/public/js/jquery-2.1.4.min.js"></script>
+	    <script src="/public/js/wwt_style.js"></script>
+	    <link href="/public/css/mui.min.css" rel="stylesheet"/>
+	    <link rel="stylesheet" href="/public/css/wwt_style.css" />
+	</head>
+	<style type="text/css">
+		ul:after{
+			height: 0 !important;
+		}
+		ul:before{
+			height: 0 !important;
+		}
+		ul{
+			border-bottom: 5px solid #efefef;
+			border-top: 5px solid #efefef;
+			font-size: 16px;
+		}
+		.mui-navigate-right:after, .mui-push-left:after, .mui-push-right:after {
+		    font-family: Muiicons;
+		    font-size: 26px;
+		    line-height: 1;
+		    position: absolute;
+		    top: 50%;
+		    display: inline-block;
+		    -webkit-transform: translateY(-50%);
+		    transform: translateY(-50%);
+		    text-decoration: none;
+		    color: #bbb;
+		    -webkit-font-smoothing: antialiased;
+		}
+		.mui-table-view-cell:after {
+		    position: absolute;
+		    right: 0;
+		    bottom: 0;
+		    left: 0px;
+		    height: 1px;
+		    content: '';
+		    -webkit-transform: scaleY(.5);
+		    transform: scaleY(.5);
+		    background-color: #c8c7cc;
+		}
+	</style>
+	<body>
+		<div class="add_payment">
+			<div class="nav">
+				<a href="javascript:history.back(-1)" class="back"></a>
+				选择收款方式
+				<a href="javascript:;" class="right"></a>
+			</div>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell" >
+					<a href="index.php?ctl=account&act=add_yhk" class="mui-navigate-right wwt_mui_a">
+						银行卡
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a href="index.php?ctl=account&act=add_zfb" class="mui-navigate-right wwt_mui_a">
+						支付宝
+					</a>
+				</li>
+			</ul>
+		</div>
+	</body>
+</html>

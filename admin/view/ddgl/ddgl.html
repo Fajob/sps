@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="/public/css/style.css"/>
+		<link rel="stylesheet" href="/public/css/layui.css" />
+		<script src="/public/js/jquery-2.1.4.min.js"></script>
+		<script src="/public/js/style.js"></script>
+		<script src="/public/js/layui.js"></script>
+	</head>
+	<body style="width: 100%;min-width: 1300px;max-width: 100%;">
+		<div class="indexCon">
+			<div class="nav">
+				<div class="logo"><img src="/public/images/logo_a.png"/></div>
+				<div class="info">
+					<!--<p style="color: #666;line-height: 40px;font-size:17px">欢迎 <span> 李小二 </span> [HD88]</p>
+					<p style="color: #333;font-size: 14px;line-height: 25px;"> <span> 2018-02-07 18:06 </span> PM</p>-->
+				</div>
+				<div class="right">
+					<button type="button">退出</button>
+				</div>
+			</div>
+			<div class="leftNav">
+				
+				<ul>
+					<li class="title">
+						<p>
+							<a href="m.php?ctl=index">首页</a>
+							<a href="m.php?ctl=user">会员中心</a>
+							<a href="m.php?ctl=incharge">会员充值</a>
+							<a href="m.php?ctl=order" class="hui">订单中心</a>
+							<a href="m.php?ctl=deal">商品管理</a>
+							<a href="m.php?ctl=type">分类管理</a>
+							<a href="m.php?ctl=conf&act=navagation">系统设置</a> 
+						</p>
+					</li>
+					
+					
+				</ul>
+				
+			</div>
+			<div class="rightCon">
+				<div class="hyzx">
+					<div class="search">
+					<button class="search_btn" type="button">搜索</button>
+					<input type="text" placeholder="请输入关键字"/>
+					<select name="" class="lm_s">
+						<option value="">请选择搜索类目</option>
+						<option value="order_sn">订单号</option>
+						<option value="user_id">会员ID</option>
+						<option value="user_name">会员昵称</option>
+						<option value="express_num">快递编号</option>
+					</select>
+					
+					</div>
+					<table border="0" border-co cellspacing="0" cellpadding="0">
+						<tr>
+							<th>编号</th>
+							<th>订单号</th>
+							<th>商品ID</th>
+							<th>商品名称</th>
+							<th>会员ID</th>
+							<th>会员昵称</th>
+							<th>订单金额</th>
+							<th>下单时间</th>
+							<th>快递单号</th>
+							<th>发货状态</th>
+							<th>操作</th>
+						</tr>
+						{%foreach from=$data.orders_info item=item1%}
+						<tr>
+							<td class="fh_id">{%$item1.id%}</td>
+							<td class="order_sn">{%$item1.order_sn%}</td>
+							<td>{%$item1.deal_id%}</td>
+							<td>{%$item1.deal_name%}</td>
+							<td class="user_id">{%$item1.user_id%}</td>
+							<td>{%$item1.user_name%}</td>
+							<td>{%$item1.price%}</td>
+							<td class="time">{%$item1.end_time%}</td>
+							<td><input class="express_num" type="text" value="{%$item1.express_num%}"/></td>
+							<td class="sp_status">{%$item1.order_status%}</td>
+							<td>
+								<button class="bj_btn" style="width: auto;height: auto;padding: 0 10px;">发货</button>
+								<button class="del_btn" style="width: auto;height: auto;padding: 0 10px;">删除</button>
+							</td>
+						</tr>
+						{%/foreach%}
+					</table>
+					<button type="button" class="dc_btn">导出</button>
+					<div id="demo2"></div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<style>
+	.dc_btn{
+		float: right;
+	    width: 50px;
+	    height: 30px;
+	    line-height: 30px;
+	    text-align: center;
+	    border: none;
+	    outline: none;
+	    background: #FF5722;
+	    color: #fff;
+	    font-size: 16px;
+	    border-radius: 5px;
+	    margin: 15px 15px;
+	    cursor: pointer;
+	}
+	</style>
+	<script>
+		//发货状态
+		$(window).ready(function(e){
+			fh_status(e);
+		});
+		
+		//发货
+		$(".bj_btn").click(function(e){
+			go_fh(e);
+		})
+		
+		//删除订单
+		$(".del_btn").click(function(e){
+			del_dd(e);
+		})
+		
+		//搜索
+		$('.search_btn').click(function(e){
+			sp_search(e);
+		})
+		
+		//分页
+		layui.use(['laypage','layer'],function(){
+			var laypage = layui.laypage,
+			layer = layui.layer;
+			laypage.render({
+				elem:'demo2',
+				count:{%$total_order_count%},
+				curr: function(){ //通过url获取当前页，也可以同上（pages）方式获取  
+		            var p = location.search.match(/p=(\d+)/);  
+		            return p ? p[1] : 1;  
+		        }(),
+				jump: function(obj,first){//点击页码出发的事件  
+		            if(first!=true){//是否首次进入页面  
+		                var currentPage = obj.curr;//获取点击的页码   
+		                window.location.href ="m.php?ctl=order&p="+currentPage;  
+		            }  
+		        }  
+			})
+		})
+		jQuery(function($){
+			var time = document.getElementsByClassName('time');
+			for(var i=0;i<time.length;i++){
+				time[i].innerText = date(time[i].innerText);
+			}
+	    })
+		
+		//导出
+		$(document).on("click",".dc_btn",function(){
+			window.location.href="m.php?ctl=order&act=do_export";
+		})
+	</script>
+</html>

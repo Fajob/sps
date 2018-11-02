@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<script src="public/js/jquery-2.1.4.min.js"></script>	
+		<link rel="stylesheet" href="public/css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="public/css/media-100.css"/>
+		<link rel="stylesheet" type="text/css" href="public/css/login-style.css"/>
+		<link rel="stylesheet" type="text/css" href="public/css/wwt_style.css"/>
+		<style>
+			.sps-announce-detail{
+				position: absolute;
+				z-index: 999;
+				top: 0;
+				background-color: #F3F3F3;
+				display: none;
+			}
+			.sps-btm-words{
+				position: absolute;
+				line-height: 0;
+				width: 100%;
+				top: 310px;
+				opacity: 0.4;
+			}
+			.mui-table-view:before{
+				height: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="sps-announce">
+			<div class="nav">
+			<a href="javascript:history.back(-1)" class="back"></a>
+			最新公告
+			<a href="javascrpt:;" class="right">
+				
+			</a>
+			</div>
+			<div class="sps-my-spschain-footer"></div>	
+			<div class="sps-announce-cont">
+				<ul class="mui-table-view">	
+					{%foreach from=$data.notice item=item1%}	           
+		            <li id="{%$item1.id%}" class="spsDetail mui-table-view-cell">
+		                <a class="sps-announce-item">
+		                    <span class="sps-mylist-left">
+		                    	<p class="sps-announce-p1 mui-ellipsis">{%$item1.detail%}</p>
+		                    	<p class="sps-announce-p2">{%$item1.date%}</p>
+		                    </span>	
+		                    <span class="sps-mylist-right"><img src="public/web/images/step_in.png" /></span>		                    
+		                </a>
+		            </li>
+					{%/foreach%}
+		       	</ul>
+			</div>
+		</div>
+		{%foreach from=$data.notice item=item1%}	
+		<div id="{%$item1.id%}" class="sps-announce-detail">
+			<div class="nav">
+			<a href="javascript:;" class="back"></a>
+			公告详情
+			<a href="javascrpt:;" class="right">
+				
+			</a>
+			</div>
+			<div class="sps-my-spschain-footer"></div>	
+			<div class="sps-announce-detail-cont mui-table-view mui-table-view-cell">
+		        <p class="sps-announce-p1">{%$item1.detail%}</p>
+		        <p class="sps-announce-p2">{%$item1.date%}</p>
+			</div>	
+			<div class="sps-btm-words">
+				公告内容
+			</div>
+		</div>
+		{%/foreach%}
+		<script>
+			var detail = document.getElementsByClassName('sps-announce-detail');
+			$('.spsDetail').click(function(){
+				for(var i=0;i<detail.length;i++){
+					if($(this).attr('id') == detail[i].getAttribute('id')){
+						detail[i].style.display = 'block';
+					}
+				}
+			})
+			$('.sps-announce-detail .nav .back').click(function(){
+				$(this).parents('.sps-announce-detail').css('display','none');
+			})
+			//时间换算
+			var time = '{%$item1.date%}';
+			function FormatDateTime(UnixTime) {  
+	            var a = UnixTime.replace("/Date(", "").replace(")/", "");  
+	            var date = new Date(parseInt(a*1000));  
+	            var y = date.getFullYear();  
+	            var m = date.getMonth() + 1;  
+	            m = m < 10 ? ('0' + m) : m;  
+	            var d = date.getDate();  
+	            d = d < 10 ? ('0' + d) : d;  
+	            return y + '-' + m + '-' + d;  
+        	};
+			time = FormatDateTime(time);
+			$('.sps-announce-p2').text(time);
+		</script>
+	</body>
+</html>

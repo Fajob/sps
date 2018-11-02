@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<script src="public/js/jquery-2.1.4.min.js"></script>
+		<script src="public/js/layer/layer.js"></script>
+		<link rel="stylesheet" href="/public/css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="/public/css/media-100.css" />
+		<link rel="stylesheet" type="text/css" href="/public/css/login-style.css" />
+		<link rel="stylesheet" type="text/css" href="public/css/wwt_style.css" />
+	</head>
+	<style>
+		.sps-pay-order-confirm {
+			float: left;
+			width: 100%;
+			padding-bottom: 20px;
+			position: fixed;
+			left: 0;
+			bottom: 0;
+		}
+		
+		.sps-pay-order-confirmbtn {
+			width: 94%;
+			height: 50px;
+			margin-left: 3%;
+			border: none;
+			outline: none;
+			color: #fff;
+			background: -moz-linear-gradient(left, #0189fe 0%, #00e4ff 100%);
+			background: -webkit-linear-gradient(left, #0189fe 0%, #00e4ff 100%);
+			background: -o-linear-gradient(left, #0189fe 0%, #00e4ff 100%);
+			background: -ms-linear-gradient(left, #0189fe 0%, #00e4ff 100%);
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0189fe', endColorstr='#00e4ff', GradientType=0);
+		}
+		
+		.sps-pay-order-detail table {
+			width: 100%;
+		}
+		
+		.sps-user-deal {
+			font-size: 18px;
+			border-radius: 50%;
+			width: 18px;
+			height: 18px;
+			border: 1px solid #c0c0c0;
+			vertical-align: middle;
+		}
+		
+		.sps-pay-credits {
+			font-size: 20px;
+			width: 20px;
+			height: 20px;
+			border: 1px solid #c0c0c0;
+		}
+		
+		.sps_select_address {
+			color: #00D1FF;
+			border: 1px solid #00d1ff !important;
+		}
+		
+		.sps-confirmbtn-invalid {
+			background: #C0C0C0;
+		}
+		
+		.sps-pay-order-words {
+			width: 100%;
+		}
+		
+		.sps-pay-order-needmoney .sps-price {
+			margin-left: -40px;
+		}
+		
+		.sps-pay-order-product img {
+			width: 100px;
+		}
+		
+		.hide {
+			display: none;
+		}
+	</style>
+
+	<body>
+		<div class="nav">
+			<a href="javascript:history.back(-1)" class="back"></a>
+			订单付款
+			<a href="javascrpt:;" class="right">
+
+			</a>
+		</div>
+		<div class="sps-my-spschain-footer"></div>
+		<div class="sps-pay-order">
+			<div class="sps-pay-order-detail">
+				<table>
+					<tr id="oneBuy" class="hide">
+						<td class="sps-pay-order-product"><img src="{%$data.img%}" /> </td>
+						<td class="sps-pay-order-words">
+							<p>{%$data.deal_name%}</p>
+							<p>
+								<span id="merPrice" class="sps-price">{%$data.current_price%}</span>
+								<span id="buyDetailMerNo"></span>
+							</p>
+						</td>
+					</tr>
+					<tr id="allBuy" class="hide">
+						<td class="sps-pay-order-product"><img src="{%$data.img%}" /> </td>
+						<td class="sps-pay-order-words">
+							<p>{%$data.deal_name%}</p>
+							<p>
+								<span id="merPrice" class="sps-price">{%$data.current_price%}</span>
+								<span id="buyDetailMerNo"></span>
+							</p>
+						</td>
+					</tr>
+					<tr class="sps-pay-order-needmoney">
+						<td style="font-size: 13px;">
+							应付金额：
+						</td>
+						<td>
+							<span id="spsNeedPay" class="sps-price"></span>
+						</td>
+					</tr>
+				</table>
+				<table class="sps-pay-order-consignee" onclick="window.location.href='index.php?ctl=setting&amp;act=address_gl&num'">
+					<tr>
+						<td>
+							<p>收货人：<span id="receivePayer">{%$address[0].user_name%}</span></p>
+							<p>联系电话：<span id="contact">{%$address[0].user_phone%}</span></p>
+							<p>收货地址：<span id="receiveAddr">{%$address[0].address%}{%$address[0].address1%}</span></p>
+						</td>
+						<td><img src="/public/web/images/step_in.png" /> </td>
+					</tr>
+				</table>
+			</div>
+			<div class="sps-my-spschain-footer"></div>
+			<div class="sps-pay-order-useragreement">
+				<ul class="mui-table-view">
+					<li style="font-size: 14px;" class="mui-table-view-cell mui-media">
+						<span class="sps-user-deal mui-icon"></span>
+						<span>SPS区块链</span> 《
+						<a href="http://xcb.quanx.cc/agreement/client_index.html">用户协议</a>》
+					</li>
+					<li style="font-size: 12px;" class="mui-table-view-cell mui-media">
+						当前sps商链价格=<span id="nowPrice"></span>元
+						<span class="sps-pay-order-gift">购买即赠送<span id="spsPresent"></span>sps商链</span>
+					</li>
+				</ul>
+			</div>
+			<div class="sps-my-spschain-footer"></div>
+			<div class="sps-pay-order-creditspay">
+				<div class="sps-pay-order-creditspay-one">
+					<span>积分付款</span>
+					<span style="font-size: 12px;">（1积分=1元）</span>
+				</div>
+				<div class="sps-pay-order-creditspay-two">
+					<table>
+						<tr>
+							<td style="width: 10%;"><img src="/public/web/images/credits.png" style="width: 30px;height: 30px;" /> </td>
+							<td style="width: 75%;">
+								<span style="font-size: 14px;">购物积分</span><br />
+								<span style="font-size: 12px;color: #C0C0C0;">当前积分：{%$user_info.consume_credits%}</span>
+							</td>
+							<td style="text-align: right;">
+								<span class="sps-pay-credits mui-icon mui-icon-checkmarkempty sps_select_address"></span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="sps-my-spschain-footer"></div>
+			<div class="sps-pay-order-confirm">
+				<button id="confirmPay" type="button" class="sps-pay-order-confirmbtn">确认付款</button>
+			</div>
+		</div>
+		<!--输入密码页-->
+		<div class="sps-input-pwd hide">
+			<div class="sps-pwd-body">
+				<p class="sps-pwd-close"><span>×</span></p>
+				<p class="sps-pwd-title">输入交易密码</p>
+				<div class="sps-pwd-cont">
+					<table>
+						<tr>
+							<td><input type="password" class="sps-pwd-word" value="" maxlength="1" />
+								<input type="password" class="sps-pwd-word" value="" maxlength="1" />
+								<input type="password" class="sps-pwd-word" value="" maxlength="1" />
+								<input type="password" class="sps-pwd-word" value="" maxlength="1" />
+								<input type="password" class="sps-pwd-word" value="" maxlength="1" />
+								<input type="password" class="sps-pwd-word" value="" maxlength="1" /> </td>
+						</tr>
+					</table>
+				</div>
+				<p>
+					<button class="sps-pwd-confirm" type="button">确定</button>
+				</p>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$('.sps-pay-order-confirmbtn').addClass('sps-confirmbtn-invalid');
+			$('.sps-pay-order-confirmbtn').attr('disabled', true);
+			$('.sps-user-deal').click(function() {
+				if($('.sps-user-deal').hasClass('mui-icon-checkmarkempty')) {
+					$('.sps-user-deal').removeClass('mui-icon-checkmarkempty wwt_select_address');
+					$('.sps-pay-order-confirmbtn').addClass('sps-confirmbtn-invalid');
+					$('.sps-pay-order-confirmbtn').attr('disabled', true)
+				} else {
+					$('.sps-user-deal').addClass('mui-icon-checkmarkempty wwt_select_address');
+					if($('.sps-pay-credits').hasClass('mui-icon-checkmarkempty')) {
+						$('.sps-pay-order-confirmbtn').removeClass('sps-confirmbtn-invalid');
+						$('.sps-pay-order-confirmbtn').attr('disabled', false)
+					}
+				}
+			})
+			$('.sps-pay-credits').click(function() {
+				if($('.sps-pay-credits').hasClass('mui-icon-checkmarkempty')) {
+					$('.sps-pay-credits').removeClass('mui-icon-checkmarkempty sps_select_address');
+					$('.sps-pay-order-confirmbtn').addClass('sps-confirmbtn-invalid');
+					$('.sps-pay-order-confirmbtn').attr('disabled', true)
+				} else {
+					$('.sps-pay-credits').addClass('mui-icon-checkmarkempty sps_select_address');
+					if($('.sps-user-deal').hasClass('mui-icon-checkmarkempty')) {
+						$('.sps-pay-order-confirmbtn').removeClass('sps-confirmbtn-invalid');
+						$('.sps-pay-order-confirmbtn').attr('disabled', false)
+					}
+				}
+			})
+			var thisURL = document.URL;
+			var getval = thisURL.split('&');
+			getval = getval[getval.length - 1];
+			if(getval != null) {
+				var showval = getval.split("=")[1];
+				if(getval.split("=")[0] == 'num') {
+					$('#oneBuy').removeClass('hide');
+					$("#buyDetailMerNo").text(showval);
+					var merP = $('#merPrice').text();
+					$('#merPrice').text(parseFloat(merP).toFixed(2));
+					$('#spsNeedPay').text((merP * showval).toFixed(2));
+					var nowP = '{%$coin_price%}';
+					$('#nowPrice').text(parseFloat(nowP).toFixed(2));
+					$('#spsPresent').text(((merP * showval) / nowP).toFixed(2));
+				}
+			}
+			/*$('#confirmPay').click(function(){
+				var id = '{%$user_info.id%}';
+				var dealId = '{%$data.id%}';
+				var dealP = '{%$data.current_price%}';
+				var amount = $('#buyDetailMerNo').text();
+				var returnSPS = $('#spsPresent').text();
+				var addressId = '{%$address[0].address_id%}';
+				$.post('api/index.php?ctl=order&act=do_payment',{'id':id,'deal_id':dealId,'deal_price':dealP,'amount':amount,'return_sps':returnSPS,'address_id':addressId},function(data){
+					if(data){
+						var obj = eval('(' + data + ')');
+						if(obj.status == true){
+							window.location.href = "index.php?ctl=mall";
+						}
+						else
+						{	
+							layer.msg(obj.msg, function(){
+								
+							});
+						}
+					}else{
+						alert('服务器错误');
+					}
+				})
+			})*/
+			/*输入密码*/
+			var flag = 2;
+			var txts = document.getElementsByClassName('sps-pwd-word');
+			for(var i = 0; i < txts.length; i++) {
+				var t = txts[i];
+				t.index = i;
+				t.setAttribute("readonly", true);
+				t.onkeyup = function() {
+
+					if(this.value) {
+						var next = this.index + 1;
+						if(next > txts.length - 1) return;
+						txts[next].removeAttribute("readonly");
+						txts[next].focus();
+					} else {
+						if(flag == 1) {
+							var prev = this.index;
+							if(prev < 0) return;
+							txts[prev].focus();
+							flag = 2;
+						} else {
+							var prev = this.index - 1;
+							if(prev < 0) return;
+							txts[prev + 1].setAttribute("readonly", 'readonly');
+							txts[prev].focus();
+							flag = 1;
+						}
+					}
+				}
+			}
+			txts[0].removeAttribute("readonly");
+			$('.sps-pwd-close span').click(function() {
+				$('.sps-input-pwd').addClass('hide');
+				var txts = document.getElementsByClassName('sps-pwd-word');
+				for(var i = 0; i < txts.length; i++) {
+					txts[i].value = '';
+				}
+			})
+			$('#confirmPay').click(function() {
+				if($('#receivePayer').text() == '' || $('#contact').text() == '' || $('#receiveAddr').text() == '') {
+					alert('请输入地址');
+				} else {
+					$('.sps-input-pwd').removeClass('hide');
+				}
+			})
+			$('.sps-pwd-confirm').click(function() {
+				var txts = document.getElementsByClassName('sps-pwd-word');
+				var pwd = '';
+				for(var i = 0; i < txts.length; i++) {
+					pwd += txts[i].value;
+				}
+				var id = '{%$user_info.id%}';
+				var dealId = '{%$data.id%}';
+				var dealP = '{%$data.current_price%}';
+				var amount = $('#buyDetailMerNo').text();
+				var returnSPS = $('#spsPresent').text();
+				var addressId = '{%$address[0].address_id%}';
+				$.post('api/index.php?ctl=order&act=do_payment', {
+					'id': id,
+					'deal_id': dealId,
+					'deal_price': dealP,
+					'amount': amount,
+					'return_sps': returnSPS,
+					'address_id': addressId,
+					'user_pwd_trade': pwd
+				}, function(data) {
+					if(data) {
+						var obj = eval('(' + data + ')');
+						if(obj.status == true) {
+							alert(obj.msg);
+							window.location.href = "index.php?ctl=mall";
+						} else {
+							layer.msg(obj.msg, function() {
+
+							});
+						}
+					} else {
+						alert('服务器错误');
+					}
+				})
+			})
+			$('.sps-pwd-word').click(function() {
+				setTimeout(function() {
+					$('.sps-pwd-body').scrollIntoView(true);
+				}, 100)
+			})
+		</script>
+		<script src="public/js/sps.js"></script>
+	</body>
+
+</html>

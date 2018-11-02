@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="public/css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="public/css/media-100.css"/>
+		<link rel="stylesheet" type="text/css" href="public/css/login-style.css"/>
+		<link rel="stylesheet" type="text/css" href="public/css/wwt_style.css"/>
+		<style>				
+			body{
+				background: #f3f3f3;
+			}
+			.sps-share-picture-four img{
+				width: 255px;
+				height: 255px;
+			}
+		</style>
+	</head>
+	<body>	
+		<div class="nav">
+			<a href="javascript:history.back(-1)" class="back"></a>
+			分享好友
+			<a href="javascript:;" class="right">
+			</a>
+		</div>
+		<div class="sps-share">
+			<div class="sps-share-picture">
+				<div class="sps-share-picture-one">
+					复制链接或扫描二维码分享给好友
+				</div>
+				<div class="sps-share-picture-two">
+					我的邀请码
+				</div>
+				<div class="sps-share-picture-three">
+					{%$user_info.invite_code%}
+				</div>
+				<div class="sps-share-picture-four">
+					<img src="{%$user_info.qr_url%}" />
+				</div>
+				<div class="sps-share-picture-five">
+					<input id="shareAddress" value="http://xcb.quanx.cc/index.php?ctl=user&act=register&code={%$user_info.invite_code%}" disabled type="text" />
+					<button onclick="copyContent('shareAddress')">复制</button>
+				</div>
+			</div>
+		</div>
+		<script>
+			function copyContent(eleId){
+			    var temp = document.createElement("input");//返回一个Range对象，用来创建选中容器。
+			    temp.setAttribute("value",document.getElementById(eleId).value);
+			    document.body.appendChild(temp);
+			    temp.select();
+			    document.execCommand("copy");
+			    document.body.removeChild(temp);
+			    alert("复制成功!!!");
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="public/css/mui.min.css">
+		<script type="text/javascript" src="public/js/jquery-2.1.4.min.js"></script>
+		<script src="public/js/layer/layer.js"></script>
+		<script src="/public/js/wwt_style.js"></script>
+		<link rel="stylesheet" type="text/css" href="public/css/media-100.css" />
+		<link rel="stylesheet" type="text/css" href="public/css/login-style.css" />
+		<link rel="stylesheet" type="text/css" href="public/css/wwt_style.css" />
+		<style>
+			.sps-myorder-title {
+				border-top: 1px solid #F3F3F3;
+			}
+			
+			.sps-myorder-title-a {
+				color: #00D1FF;
+				border-bottom: 1px solid #00D1FF;
+			}
+			
+			.hide {
+				display: none;
+			}
+			
+			.sps-pay-order-words {
+				width: 80%;
+			}
+			
+			.sps-myorder-reminder {
+				border-bottom: 1px solid #f3f3f3;
+			}
+			
+			.sps-pay-order-product img {
+				width: 106px;
+			}
+			
+			.sps-myordersend-detail {
+				position: fixed;
+				top: 0;
+			}
+			
+			.sps-myorder-detail-reminder {
+				padding-top: 10px;
+				height: 58px;
+			}
+			
+			.sps-myorder-detail-reminder button {
+				float: right;
+				margin-right: 20px;
+				color: #00D1FF;
+				border: 1px solid #00D1FF;
+				border-radius: 5px;
+			}
+			
+			.sps-myordersend-detail-btm {
+				padding-left: 2rem;
+				padding-top: 15px;
+				padding-bottom: 10px;
+			}
+			
+			.sps-myordersend-detail-title {
+				padding: 25px;
+			}
+			
+			.sps-express-no {
+				font-size: 12px;
+				color: #c0c0c0;
+				margin-left: 2rem;
+				margin-top: 7px;
+				display: inline-block;
+			}
+			.sps-myorder-send-expressno{
+				width: 100%;
+			    height: 50px;
+			    border-bottom: 1px solid #f3f3f3;
+			    line-height: 50px;
+			    font-size: 14px;
+			    padding-left: 2rem;
+			    color: #00D1FF;
+			}
+			.sps-myordersend-detail-title{
+				padding-top: 20px;
+    			padding-bottom: 20px;
+			}
+			.sps-myordersend-detail .sps-pay-order-detail{
+				padding-bottom: 10px;
+			}
+			.sps-myordersend-detail-btm p{
+				margin-bottom: 5px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="nav">
+			<a href="index.php?ctl=user&act=myinfo" class="back"></a>
+			我的订单
+			<a href="javascript:;" class="right">
+			</a>
+		</div>
+		<div class="sps-myorder-send">
+			<div class="sps-myorder-send-bg">
+				<div class="sps-myorder-title">
+					<table>
+						<tr>
+							<td class="sps-myorder-a spsSend">待发货</td>
+							<td></td>
+							<td class="sps-myorder-a spsReceive">待收货</td>
+							<td></td>
+							<td class="sps-myorder-a spsDone">已完成</td>
+						</tr>
+					</table>
+				</div>
+				<div class="sps-my-spschain-footer"></div>
+				{%foreach from=$data item=item1%}
+				<div class="oneOrder" id="{%$item1.id%}">
+					<div class="sps-pay-order-detail">
+						<table class="spsSendDetail">
+							<tr>
+								<td class="sps-pay-order-product"><img src="{%$item1.img%}" /> </td>
+								<td class="sps-pay-order-words">
+									<p>{%$item1.deal_name%}</p>
+									<p>
+										<span class="sps-price">{%$item1.current_price%}</span>
+										<span>{%$item1.amount%}</span>
+									</p>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="sps-myorder-send-total">
+						<p>合计：<span>{%$item1.total_price%}</span>(免运费)</p>
+					</div>
+					<div class="sps-myorder-reminder hide">
+						<span class="sps-express-no">{%$item1.express_num%}</span>
+						<button class="btn" type="button"></button>
+					</div>
+					<input type="hidden" class="consignee" value="{%$item1.address_detail.user_name%}" />
+					<input type="hidden" class="consigneePhoneNo" value="{%$item1.address_detail.user_phone%}" />
+					<input type="hidden" class="consigneeAddr" value="{%$item1.address_detail.address%}{%$item1.address_detail.address1%}" />
+					<input type="hidden" class="productImg" value="{%$item1.img%}" />
+					<input type="hidden" class="productName" value="{%$item1.deal_name%}" />
+					<input type="hidden" class="productCurrentP" value="{%$item1.current_price%}" />
+					<input type="hidden" class="productAmount" value="{%$item1.amount%}" />
+					<input type="hidden" class="productTotalP" value="{%$item1.total_price%}" />
+					<input type="hidden" class="orderSn" value="{%$item1.order_sn%}" />
+					<input type="hidden" class="xiadanTime" value="{%$item1.create_time%}" />
+					<input type="hidden" class="fahuoTime" value="{%$item1.end_time%}" />
+					<input type="hidden" class="chengjiaoTime" value="{%$item1.receive_time%}" />
+				</div>
+				{%/foreach%}
+			</div>
+		</div>
+		<!--详情页-->
+		<div class="sps-myordersend-detail hide">
+			<div class="nav">
+				<a href="javascript:;" class="detailBack back"></a>
+				订单详情
+				<a href="javascript:;" class="right">
+				</a>
+			</div>
+			<div class="sps-myordersend-detail-title">
+				<h4></h4>
+				<span style="font-size: 13px;"></span>
+			</div>
+			<div class="sps-pay-order-detail">
+				<table class="sps-pay-order-consignee">
+					<tr>
+						<td>
+							<p>收货人：<span id="consignee"></span></p>
+							<p>联系电话：<span id="consigneePhoneNo"></span></p>
+							<p>收货地址：<span id="consigneeAddr"></span></p>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="sps-my-spschain-footer"></div>
+			<div class="sps-pay-order-detail">
+				<table class="sps-myordersend-detail-product">
+					<tr>
+						<td class="sps-pay-order-product"><img id="pImg" src="" /> </td>
+						<td class="sps-pay-order-words">
+							<p id="pName"></p>
+							<p>
+								<span id="pPrice" class="sps-price"></span>
+								<span id="pAmount"></span>
+							</p>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="sps-myorder-send-total">
+				<p>合计：<span id="totalP"></span>(免运费)</p>
+			</div>
+			<div class="sps-myorder-send-expressno">
+				<span></span>
+			</div>
+			<div class="sps-myordersend-detail-btm">
+				<p>订单编号：<span id="orderNo"></span></p>
+				<p>支付方式：<span>购物积分</span></p>
+				<p>下单时间：<span id="xiadanT"></span></p>
+				<!--<p>付款时间：<span></span>&nbsp&nbsp&nbsp<span></span></p>-->
+				<p>发货时间：<span id="fahuoT"></span></p>
+				<p>成交时间：<span id="chengjiaoT"></span></p>
+			</div>
+			<div class="sps-myorder-detail-reminder">
+				<button id="" class="btn1" style="background-color: #00D1FF;color: #FFFFFF;"></button>
+			</div>
+		</div>
+		<script type="text/javascript" src="public/js/sps.js"></script>
+		<script>
+			var thisURL = document.URL;
+			var getval = thisURL.split('&');
+			order = getval[getval.length - 1];
+			var showval = order.split('=')[1];
+			if(order.split('=')[0] == 'order_status') {
+				if(showval == '1') {
+					$('.spsSend').addClass('sps-myorder-title-a');
+					$('.spsSend').css('color', '00D1FF !important');
+					$('.sps-myorder-reminder').css('display', 'none');
+				} else if(showval == '2') {
+					$('.spsReceive').addClass('sps-myorder-title-a');
+					$('.spsReceive').css('color', '00D1FF !important');
+					$('.sps-myorder-reminder').css('display', 'block');
+					$('.btn').text('确认收货')
+					$('.btn').click(function() {
+						var id = '{%$user_info.id%}';
+						var orderId = $(this).parents('.oneOrder').attr('id');
+						$.post('api/index.php?ctl=order&act=do_receive_package', {
+							'id': id,
+							'order_id': orderId
+						}, function(data) {
+							if(data) {
+								var obj = eval('(' + data + ')');
+								if(obj.status == true) {
+									window.location.href = 'index.php?ctl=user&act=order&p=1&order_status=3';
+								} else {
+									layer.msg(obj.msg, function() {
+
+									});
+								}
+							} else {
+								alert('服务器返回一个错误');
+							}
+						})
+					})
+				} else if(showval == '3') {
+					$('.spsDone').addClass('sps-myorder-title-a');
+					$('.spsDone').css('color', '00D1FF !important');
+					$('.sps-myorder-reminder').css('display', 'block');
+					$('.btn').text('删除订单')
+					$('.btn').click(function() {
+						var id = '{%$user_info.id%}';
+						var orderId = $(this).parents('.oneOrder').attr('id');
+						$.post('api/index.php?ctl=order&act=do_del_order', {
+							'id': id,
+							'order_id': orderId
+						}, function(data) {
+							if(data) {
+								var obj = eval('(' + data + ')');
+								if(obj.status == true) {
+									window.location.href = 'index.php?ctl=user&act=order&p=1&order_status=3';
+								} else {
+									layer.msg(obj.msg, function() {
+
+									});
+								}
+							} else {
+								alert('服务器返回一个错误');
+							}
+						})
+					})
+				}
+			}
+			$('.spsSend').click(function() {
+				window.location.href = 'index.php?ctl=user&act=order&p=1&order_status=1';
+			})
+			$('.spsReceive').click(function() {
+				window.location.href = 'index.php?ctl=user&act=order&p=1&order_status=2';
+			})
+			/*$(document).on("click", ".spsReceive", function() {
+				window.location.href = 'index.php?ctl=user&act=order&p=1&order_status=2';
+			})*/
+			$('.spsDone').click(function() {
+				window.location.href = 'index.php?ctl=user&act=order&p=1&order_status=3';
+			})
+			var p = getval[getval.length - 2];
+			if(p[0] == 'p') {
+				p = p[2];
+			} else {
+				p = 1;
+			}
+			var pages = '{%$pages%}';
+			$(window).on('scroll', function() {
+				if(($(window).scrollTop() >= $(document).height() - $(window).height()) && p < pages) {
+					p++;
+					if(order.split('=')[0] == 'order_status') {
+						if(showval == '1') {
+							window.location.href = 'index.php?ctl=user&act=order&p=' + p + '&order_status=1';
+						} else if(showval == '2') {
+							window.location.href = 'index.php?ctl=user&act=order&p=' + p + '&order_status=2';
+						} else if(showval == '3') {
+							window.location.href = 'index.php?ctl=user&act=order&p=' + p + '&order_status=3';
+						}
+					}
+				}
+			})
+			/*订单详情*/
+			$('.detailBack').click(function() {
+				$('.sps-myordersend-detail').addClass('hide');
+				$('body').css('overflow', 'auto');
+				$('.sps-myorder-send-expressno span').removeClass('hide');
+			})
+			$('.sps-pay-order-detail').click(function() {
+				$('body').css('overflow', 'hidden');
+				$('#consignee').text($('.consignee').val());
+				$('#consigneePhoneNo').text($('.consigneePhoneNo').val());
+				$('#consigneeAddr').text($('.consigneeAddr').val());
+				$('#pImg').attr('src', $(this).siblings('.productImg').val());
+				$('#pName').text($(this).siblings('.productName').val());
+				$('#pPrice').text($(this).siblings('.productCurrentP').val());
+				$('#pAmount').text($(this).siblings('.productAmount').val());
+				$('#totalP').text($(this).siblings('.productTotalP').val());
+				$('#orderNo').text($(this).siblings('.orderSn').val());
+				$('#xiadanT').text(date(parseFloat($(this).siblings('.xiadanTime').val())));
+				if(order.split('=')[0] == 'order_status') {
+					if(showval == '1') {
+						$('.sps-myordersend-detail').removeClass('hide');
+						$('.sps-myordersend-detail-title h4').text('买家已付款');
+						$('.sps-myordersend-detail-title span').text('等待商家发货');
+						$('#fahuoT').parent('p').css('display', 'none');
+						$('#chengjiaoT').parent('p').css('display', 'none');
+						$('.sps-myorder-detail-reminder').css('display', 'none');
+						$('.btn1').attr('id', $(this).parents('.oneOrder').attr('id'));
+						$('.sps-myorder-send-expressno').addClass('hide');
+						$('.sps-myordersend-detail-btm').css('border-bottom','0px');
+						$('.sps-myordersend-detail-btm').css('min-height', '270px');
+					} else if(showval == '2') {
+						$('.sps-myordersend-detail').removeClass('hide');
+						$('.sps-myordersend-detail-title h4').text('商家已发货');
+						$('.sps-myordersend-detail-title span').text('15天后自动确认收货');
+						$('#fahuoT').text(date($(this).siblings('.fahuoTime').val()));
+						$('#chengjiaoT').parent('p').css('display', 'none');
+						$('.sps-myorder-detail-reminder').css('display', 'block');
+						$('.sps-myorder-detail-reminder button').text('确认收货');
+						$('.sps-myordersend-detail-btm').css('min-height', '162px');
+						$('.btn1').attr('id', $(this).parents('.oneOrder').attr('id'));
+						$('.sps-myorder-send-expressno span').text($(this).siblings('.sps-myorder-reminder').find('.sps-express-no').text());
+						/*确认收货*/
+						$('.btn1').click(function() {
+							var id = '{%$user_info.id%}';
+							var orderId = $(this).attr('id');
+							$.post('api/index.php?ctl=order&act=do_receive_package', {
+								'id': id,
+								'order_id': orderId
+							}, function(data) {
+								if(data) {
+									var obj = eval('(' + data + ')');
+									if(obj.status == true) {
+										window.location.href = 'index.php?ctl=user&act=order&p=1&order_status=3';
+									} else {
+										layer.msg(obj.msg, function() {
+
+										});
+									}
+								} else {
+									alert('服务器返回一个错误');
+								}
+							})
+						})
+					} else if(showval == '3') {
+						$('.sps-myordersend-detail').removeClass('hide');
+						$('.sps-myordersend-detail-title h4').text('交易已完成');
+						$('.sps-myordersend-detail-title span').text('感谢您的支持，欢迎下次光临');
+						$('#fahuoT').text(date($(this).siblings('.fahuoTime').val()));
+						$('#chengjiaoT').text(date($(this).siblings('.chengjiaoTime').val()));
+						$('.sps-myorder-detail-reminder').css('display', 'block');
+						$('.sps-myorder-detail-reminder button').text('删除订单');
+						$('.sps-myordersend-detail-btm').css('min-height', '162px');
+						$('.btn1').attr('id', $(this).parents('.oneOrder').attr('id'));
+						$('.sps-myorder-send-expressno span').text($(this).siblings('.sps-myorder-reminder').find('.sps-express-no').text());
+						/*删除订单*/
+						$('.btn1').click(function() {
+							var id = '{%$user_info.id%}';
+							var orderId = $(this).attr('id');
+							$.post('api/index.php?ctl=order&act=do_del_order', {
+								'id': id,
+								'order_id': orderId
+							}, function(data) {
+								if(data) {
+									var obj = eval('(' + data + ')');
+									if(obj.status == true) {
+										window.location.href = 'index.php?ctl=user&act=order&p=1&order_status=3';
+									} else {
+										layer.msg(obj.msg, function() {
+
+										});
+									}
+								} else {
+									alert('服务器返回一个错误');
+								}
+							})
+						})
+					}
+				}
+			})
+		</script>
+	</body>
+
+</html>

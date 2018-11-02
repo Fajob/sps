@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	    <title></title>
+	    <script src="/public/js/jquery-2.1.4.min.js"></script>
+	    <script src="/public/js/wwt_style.js"></script>
+	    <script src="/public/js/buy_sell.js"></script>
+	    <script src="/public/js/layer/layer.js"></script>
+	    <link href="/public/css/mui.min.css" rel="stylesheet"/>
+	    <link rel="stylesheet" href="/public/css/wwt_style.css" />
+	</head>
+	<body>
+		<div class="nav">
+			<a href="javascript:history.back(-1)" class="back"></a>
+			发布订单
+			<a href="index.php?ctl=trade&act=trade_record" class="right">记录</a>
+		</div>
+		<div class="wwt_fb_dd">
+			<div class="wwt_fb_title">
+				<a href="javascript:;" class="wwt_fb_active">购买</a>
+				<a href="javascript:;">出售</a>
+			</div>
+			<div class="wwt_fb_zong">
+				<div class="wwt_fb_con">
+					<form id="gm_form">
+						<p>当前价格: <span><big class="dq_price" style="font-size: 14px;">{%$coin_price%}</big>元</span></p>
+						<p>购买价格: <input type="text" name="price" placeholder="请输入购买价格"/></p>
+						<p style="margin-top: 15px;">购买数量: <input type="text" name="num" placeholder="请输入购买数量" /></p>
+						<p>折合金额: <span><big style="font-size: 14px;" class="zh_con"></big>元</span></p>
+						<input type="hidden" name="id" value="{%$user_info.id%}"/>
+						<input type="hidden" name="type" value="buy"/>
+						<p>交易密码: <input name="user_pwd_trade" type="password" placeholder="请输入交易密码"/></p>
+						<p style="height: 45px;margin-top: 50px;"><button type="button" id="sure_buy_btn">确认购买</button></p>
+					</form>
+				</div>
+				<div class="wwt_fb_con none">
+					<form id="cs_form">
+						<p>当前价格: <span><big class="dq_price" style="font-size: 14px;">{%$coin_price%}</big>元</span></p>
+						<p>出售价格: <input name="price" type="text" placeholder="请输入出售价格"/></p>
+						<p style="margin-top: 15px;">出售数量: <input name="num" type="text" placeholder="请输入出售数量" /></p>
+						<p>折合金额: <span><big class="zh_con" style="font-size: 14px;"></big>元</span></p>
+						<input type="hidden" name="id" value="{%$user_info.id%}"/>
+						<input type="hidden" name="type" value="sale"/>
+						<p>交易密码: <input type="password" name="user_pwd_trade" placeholder="请输入交易密码"/></p>
+						<p style="height: 45px;margin-top: 50px;"><button type="button" id="sure_sell_btn">确认出售</button></p>
+					</form>
+				</div>
+			</div>
+			
+		</div>
+	</body>
+	<script>
+		$(".wwt_fb_title a").click(function(){
+			$(this).addClass("wwt_fb_active").siblings().removeClass("wwt_fb_active");
+			var index = $(this).index();
+			$(".wwt_fb_zong>div").eq(index).removeClass("none").siblings().addClass("none")
+		})
+		
+//	<!--获取折合金额-->
+		$("input[name=user_pwd_trade]").focus(function(){
+			var price = $(this).parents(".wwt_fb_con").find(".dq_price").text();
+			var num = $(this).parents(".wwt_fb_con").find("input[name=num]").val();
+			$(this).parents(".wwt_fb_con").find(".zh_con").text(price*num); 
+		})
+	</script>
+</html>

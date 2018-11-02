@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	    <title>添加地址</title>
+	    <script src="/public/js/jquery-2.1.4.min.js"></script>
+	    <script src="/public/js/mui.min.js"></script>
+		<script src="/public/js/mui.picker.min.js"></script>
+		<script src="public/js/layer/layer.js"></script>
+		<script src="/public/js/city.data-3.js" type="text/javascript" charset="utf-8"></script>
+	    <script src="/public/js/wwt_style.js"></script>
+	    <link href="/public/css/mui.min.css" rel="stylesheet"/>
+	    <link rel="stylesheet" href="/public/css/wwt_style.css" />
+	    <link rel="stylesheet" type="text/css" href="/public/css/mui.picker.min.css"/>
+	</head>
+	<style type="text/css">
+		.mui-table-view-cell:after {
+		    left: 0px;
+		}
+		li{
+			font-size: 14px;
+			line-height: 40px;
+			position: relative;
+		}
+		ul:before {
+		    height: 0px !important;
+		}
+		ul:after {
+		    height: 0px !important;
+		}
+		li input{
+			text-align: left !important;
+			color: #666 !important;
+		}
+		.mui-icon-checkmarkempty:before {
+		    content: '\e472';
+		    position: relative;
+		    right: 5px;
+		}
+	</style>
+	<body style="background: #efefef;">
+		<div class="nav">
+			<a href="javascript:history.back(-1)" class="back"></a>
+			添加地址
+			<a href="javascript:;" class="right"></a>
+		</div>
+		<form id="address_form" method="post">
+			<ul class="mui-table-view" style="margin-top: 5px;">
+				<li class="mui-table-view-cell">
+					真实姓名
+					<input type="hidden" name="id" value="{%$user_info.id%}"/>
+					<input type="text" name="user_name" class="wwt_mui_input" placeholder="请输入收获人真实姓名"/>
+				</li>
+				<li class="mui-table-view-cell">
+					手机号
+					<input type="text" name="user_phone"  class="wwt_mui_input" placeholder="请输入手机号码"/>
+				</li>
+				<li class="mui-table-view-cell">
+					所在地区
+					<input name="address" type="text" id="add_address" value=""  class="wwt_mui_input" placeholder="选择省市区"/>
+					<button type="button" id="choose_city" class="wwt_city_btn"></button>
+				</li>
+				<li class="mui-table-view-cell">
+					详细地址
+					<input name="address1" style="border: none;font-size: 13px;margin-bottom: 0;padding: 10px 5px;" type="text" placeholder="输入详细地址、街道、小区名称、门牌号等"/>
+				</li>
+			</ul>
+			<div class="choose_address">
+				<label class="label">
+					<input id="is_default" type="hidden" name="is_default" value="1"/>
+					<span class="mui-icon mui-icon-checkmarkempty wwt_select_address"></span>
+					默认地址
+				</label>
+			</div>
+			<button type="button" class="add_address_btn">确认添加</button>
+		</form>
+	</body>
+	<script>
+		//城市三级联动
+		(function($, doc) {
+				$.init();
+				$.ready(function(){
+					var get_city = function(obj, param) {
+						return obj[param] || '';
+					};
+					var city = new $.PopPicker({
+						layer: 3
+					});
+					city.setData(cityData3);
+					var btn = doc.getElementById('choose_city');
+					var _input = doc.getElementById('add_address');
+					btn.addEventListener('tap', function(event) {
+						city.show(function(items) {
+							_input.value = get_city(items[0], 'text') + " " + get_city(items[1], 'text') + " " + get_city(items[2], 'text');
+							//返回 false 可以阻止选择框的关闭
+							//return false;
+						});
+					}, false);
+				});
+		})(mui, document);
+		
+		//是否为默认地址
+		var is_default;
+		$(document).on("click","label",function(){
+			$(this).toggleClass("label");
+			$(this).children("span").toggleClass("mui-icon-checkmarkempty wwt_select_address");
+			if($(this).attr("class") == "label"){
+				var is_default = 1
+			}else{
+				var is_default = 0
+			}
+			$("#is_default").val(is_default);
+		})
+		$(document).on("click",".add_address_btn",function(){
+			var address_form = $("#address_form").serialize();
+			$.post("api/index.php?ctl=user&act=do_add_address",address_form,function(data){
+				if(data){
+					var _data = eval("("+data+")");
+					if(_data.status == true){
+						alert(_data.msg);
+						window.location.href="index.php?ctl=setting&act=address_gl";
+					}else{
+						layer.msg(_data.msg, function(){
+						});
+					}
+				}
+			})
+		})
+	</script>
+</html>

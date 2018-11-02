@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<script src="public/js/jquery-2.1.4.min.js"></script>
+		<script src="public/js/layer/layer.js"></script>
+		<link rel="stylesheet" href="/public/css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="/public/css/media-100.css"/>
+		<link rel="stylesheet" type="text/css" href="/public/css/login-style.css"/>
+		<link rel="stylesheet" type="text/css" href="public/css/wwt_style.css"/>
+		<style>
+			.sps-product-detail-cont ul li img{
+				width: 100%;
+			}
+			.sps-product-detail-cont ul li p{
+				padding-right: 2rem;
+			}
+			.sps-product-detail-brief{
+				padding-top: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="nav">
+			<a href="javascript:history.back(-1)" class="back"></a>
+			产品详情
+			<a href="javascript:;" class="right">
+			</a>
+		</div>
+		<div class="sps-product-detail">
+			<div class="sps-product-detail-cont">
+				<ul>
+					<li>
+						<img src="{%$data.img%}" />
+						<p class="sps-product-detail-introduction">{%$data.deal_name%}</p>
+						<p class="sps-product-detail-price">{%$data.current_price%}</p>
+						<p class="sps-product-detail-brief">{%$data.brief%}</p>
+						<img src="{%$data.img1%}" />
+						<img src="{%$data.img2%}" />
+						<img src="{%$data.img3%}" />
+					</li>
+				</ul>
+			</div>
+			<div class="sps-product-detail-bottom">
+				<div class="sps-product-detail-add"><input id="spsAdd" type="button" value="加入购物车"/> </div>
+				<div class="sps-product-detail-buy"><input id="spsBuy" type="button" value="立即购买"/></div>
+			</div>
+		</div>
+		<div class="wwt_join_buy none">
+			<div class="wwt_join_buy_con">
+				<div class="wwt_sp_info">
+					<div class="sp_info_img">
+						<img src="{%$data.img%}" />	
+					</div>
+					<div class="sp_price_kc">
+						<p class="price">￥{%$data.current_price%}</p>
+						<p class="kc">(库存{%$data.stock%}件)</p>
+					</div>
+					<a class="close" href="javascript:;">×</a>
+				</div>
+				<div class="wwt_sp_num_btn">
+					<p>
+						<span>数量</span>
+						<span class="num">
+							<a class="sps-pom-left" href="javascript:;">-</a>
+							<input id='dealDetailMerNo' class="sps-pom-mid" value="1" type="text" disabled="disabled"/>
+							<a class="sps-pom-right" href="javascript:;">+</a>
+						</span>
+					</p>
+					<p class="btn">
+						<button class="gwc_btn none">加入购物车</button>
+						<button id="dealDetailBuyBtn" class="buy_btn none">立即购买</button>
+					</p>
+				</div>
+			</div>
+			
+		</div>
+	</body>
+	<script type="text/javascript">
+		$(".buy_btn").click(function(){
+			var num = $('#dealDetailMerNo').val();
+			window.location.href = "index.php?ctl=mall&act=buy_detail&deal_id={%$data.id%}&num="+num;
+		})
+		$("#spsAdd").on('click',function(){
+			$('.wwt_join_buy').removeClass('none');
+			$('.gwc_btn').removeClass('none');
+		})
+		$('.close').on("click",function(){
+			if($('.none').text() == '立即购买'){
+				$('.gwc_btn').addClass('none');
+			}else{
+				$('.buy_btn').addClass('none');
+			}
+			$('.wwt_join_buy').addClass('none');
+		})
+		$("#spsBuy").on('click',function(){
+			$('.wwt_join_buy').removeClass('none');
+			$('.buy_btn').removeClass('none');
+		})
+		$('.sps-pom-right').on('click',function(){//数量加
+			var totalNo = $('.sps-pom-mid').val();
+			totalNo = parseFloat(totalNo);
+			totalNo++;
+			$('.sps-pom-mid').val(totalNo);
+		});
+		$('.sps-pom-left').on('click',function(){//数量减
+			var totalNo = $('.sps-pom-mid').val();
+			totalNo = parseFloat(totalNo);
+			if(totalNo != '1'){
+				totalNo--;
+			}
+			$('.sps-pom-mid').val(totalNo);
+		});
+		$(document).on("click",".gwc_btn",function(){
+			var userId = "{%$user_info.id%}";
+			var dealId = "{%$data.id%}";
+			console.log(userId);
+			var num = $('#dealDetailMerNo').val();
+			$.post("api/index.php?ctl=cart&act=do_add_to_cart",{"id":userId,"deal_id":dealId,"num":num},function(data){
+				if(data)
+				{
+					var obj = eval('(' + data + ')');
+					if(obj.status == true){
+						window.location.href = "index.php?ctl=mall&act=cart_detail";
+					}
+					else
+					{	
+						layer.msg(obj.msg, function(){
+							
+						});
+					}
+				}
+				else
+				{
+					alert('服务器返回一个错误');
+				}
+			})
+		})
+	</script>
+	<script src="public/js/sps.js"></script>
+</html>

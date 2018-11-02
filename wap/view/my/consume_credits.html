@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="/public/css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="/public/css/media-100.css" />
+		<link rel="stylesheet" type="text/css" href="/public/css/login-style.css" />
+		<link rel="stylesheet" type="text/css" href="public/css/wwt_style.css" />
+		<script src="/public/js/jquery-2.1.4.min.js"></script>
+		<script src="/public/js/layer/layer.js"></script>
+		<script src="/public/js/wwt_style.js"></script>
+		<style>
+			.sps-pay-out-2dcode {
+				text-align: center;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="nav">
+			<a href="javascript:history.back(-1)" class="back"></a>
+			积分互转
+			<a href="javascript:;" class="right">
+			</a>
+		</div>
+		<div class="sps-my-spschain-footer"></div>
+		<div class="sps-credits-ex">
+			<div class="sps-credits-ex-title">
+				<span>我的积分</span><span>{%$user_info.consume_credits%}</span>
+			</div>
+			<div class="sps-pay-in-property">
+				<div class="sps-pay-out-2dcode">
+					<p>
+						<span>手机号码：</span><input id="toId" type="text" placeholder="请输入对方手机号" />
+					</p>
+					<p>
+						<span>转出数量：</span><input id="tsfNo" type="text" placeholder="请输入转给对方数量" />
+					</p>
+					<p>
+						<span>交易密码：</span><input id="tradePwd" type="password" placeholder="请输入交易密码" />
+					</p>
+					<p class="sps-pay-out-2dcode-btn">
+						<input id="confirmTsfout" style="margin-top:20px;" type="button" value="确认转出" />
+					</p>
+				</div>
+			</div>
+			<div class="sps-pay-in-detail">
+				<div class="sps-pay-in-detail-title">
+					<img src="/public/web/images/detail.png" />
+					<span>互转明细</span>
+				</div>
+				<div class="sps-pay-in-detail-cont">
+					<table>
+						<thead>
+							<tr>
+								<td>日期</td>
+								<td>类型</td>
+								<td>用户</td>
+								<td>数量</td>
+							</tr>
+						</thead>
+						<tbody>
+							{%foreach from=$data.data item=item1%}
+							<tr>
+								<td class="time">{%$item1.time%}</td>
+								<td>{%if $item1.to_id eq $item1.id_phone_number%}转入{%else%}转出{%/if%}</td>
+								<td>{%$item1.to_id%}</td>
+								<td>{%$item1.num%}</td>
+							</tr>
+							{%/foreach%}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<script>
+			var time = document.getElementsByClassName('time');
+			for(var i = 0; i < time.length; i++) {
+				time[i].innerText = date(time[i].innerText);
+			}
+			/*下拉加载*/
+			var p = 1;
+			var id = {%$user_info.id%};
+			$(window).on('scroll', function() {
+				if($(window).scrollTop() >= $(document).height() - $(window).height()) {
+					p++;
+					$.post('api/index.php?ctl=translate&act=get_consume_credits_log', {
+						'p': p,
+						"id": id
+					}, function(data) {
+						if(data) {
+							var obj = eval('(' + data + ')')
+							if(obj.status == true) {
+								var _data = obj.data.data;
+								for(var i = 0; i < _data.length; i++) {
+									$tr = $("<tr><td class='time'>" + date(_data[i].time) + "</td><td>{%if " + _data[i].to_id + " eq $user_info.phone_number%}转入{%else%}转出{%/if%}</td><td>" + _data[i].to_id + "</td><td>" + _data[i].num + "</tr>");
+									$tr.appendTo($("tbody"));
+									/*$(".time").text(date(_data[i].time));*/
+								}
+							} else {
+								layer.msg(obj.msg, function() {
+
+								});
+							}
+						} else {
+							alert('服务器返回一个错误')
+						}
+					})
+				}
+			})
+			/*确认转出*/
+			$('#confirmTsfout').click(function() {
+				var tradePwd = $('#tradePwd').val();
+				var code = '';
+				var toPhoneNo = $('#toId').val()
+				var tsfNo = $('#tsfNo').val();
+				$.post('api/index.php?ctl=translate&act=do_translate_consume_credits', {
+					'id': id,
+					'trade_pwd': tradePwd,
+					'code': code,
+					'to_phone_number': toPhoneNo,
+					'num': tsfNo
+				}, function(data) {
+					if(data) {
+						var obj = eval('(' + data + ')')
+						if(obj.status == true) {
+							alert(obj.msg);
+							window.location.reload();
+						} else {
+							layer.msg(obj.msg, function() {
+
+							});
+						}
+					} else {
+						alert('服务器返回一个错误')
+					}
+				})
+			})
+		</script>
+	</body>
+
+</html>

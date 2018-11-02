@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="public/css/mui.min.css">
+		<script src="/public/js/jquery-2.1.4.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="public/css/media-100.css"/>
+		<link rel="stylesheet" type="text/css" href="public/css/login-style.css"/>	
+		<link rel="stylesheet" type="text/css" href="public/css/wwt_style.css"/>
+		<style>
+			.sps-save-wallet-status table tr td{
+				width: 50%;
+			}
+			.myHead img{
+				width: 78px !important;		
+				height: 78px !important;		
+			}
+			.myFellowHead img{
+				width: 48px !important;
+				height: 48px !important;	
+			}
+			.sps-team-performence-personal .sps-team-performence-headinfo{
+				padding-top: 11px;
+			}
+			.sps-team-performence-title .sps-team-performence-headinfo table td{
+				height: 30px;
+			}
+			.sps-team-performence-title .sps-team-performence-headinfo{
+				padding-top: 8px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="nav">
+			<a href="javascript:history.back(-1)" class="back"></a>
+			团队总业绩
+			<a href="javascript:;" class="right">
+			</a>
+		</div>
+		<div class="sps-team-performence">
+		<div class="sps-team-performence-bg">
+			<div class="sps-team-performence-title">
+				<div class="sps-my-head">
+					<div class="myHead">
+						<img src="{%$data.user_info.user_avatar%}" />
+					</div>
+				</div>
+				<div class="sps-team-performence-headinfo">
+					<table>
+						<tr>
+							<td style="width: 60%;">昵称：<span>{%$data.user_info.user_name%}</span></td>
+							<td>等级：<span id="myLv"></span></td>
+						</tr>
+						<tr>
+							<td colspan="2">我的总业绩：<span>{%$data.user_info.total_consume%}</span></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="sps-team-performence-myhigher">
+				<table>
+					<tr>
+						<td>我的上级</td>
+						<td>手机号：<span>{%$data.p_user_info.phone_number%}</span></td>
+						<td>等级：<span id="myPlv"></span></td>
+					</tr>
+				</table>
+			</div>
+			<div class="sps-team-performence-underumbrella">伞下团队业绩</div>
+			<div class="sps-my-spschain-footer"></div>	
+			{%foreach from=$data.direct_users_detail item=item1%}
+			<div class="sps-team-performence-personal">
+				<table style="border-bottom: 1px solid #F3F3F3;height: 90px;">
+					<tr>
+						<td>
+							<div class="sps-my-head">
+								<div class="myFellowHead">
+									<img src="{%$item1.user_info.user_avatar%}" />
+								</div>
+							</div>
+							<div class="sps-team-performence-headinfo">
+								<table>									
+									<tr>
+										<td colspan="2">{%$item1.user_info.user_name%}</td>
+									</tr>
+									<tr>
+										<td style="width: 60%;">{%$item1.user_info.phone_number%}</td>
+										<td>等级：<span class="myFellowLv">{%$item1.user_info.user_level%}</span></td>
+									</tr>
+								</table>
+							</div>
+						</td>
+					</tr>
+				</table>
+				<table style="border-bottom: 5px solid #F3F3F3;height: 90px;">
+					<tr>
+						<td>
+							<div class="sps-save-wallet-status">
+							<table>
+								<tr>
+									<td>
+										<p style="margin-bottom: 20px;">团队总业绩</p>
+										<span style="color: #F17801;font-size: 24px;">{%$item1.rainbow_consume%}</span>
+									</td>
+									<td>
+										<p style="margin-bottom: 20px;">每日团队新增业绩</p>
+										<span style="color: #F17801;font-size: 24px;">{%$item1.rainbow_consume_daily%}</span>
+									</td>
+								</tr>
+							</table>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			{%/foreach%}
+		</div>
+		</div>
+		<script src="public/js/sps.js"></script>
+		<script>
+			var lv = '{%$data.user_info.user_level%}';
+			$('#myLv').text(myLv(lv));
+			var plv = '{%$data.p_user_info.user_level%}';
+			$('#myPlv').text(myLv(plv));
+			var myFellow = document.getElementsByClassName('myFellowLv');
+			for(var i=0;i<myFellow.length;i++){
+				var tt = myFellow[i].innerText;
+				var txt = myLv(tt);
+				myFellow[i].innerText = txt;
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>{%$title%}</title>
+		<link rel="stylesheet" type="text/css" href="/public/css/style.css"/>
+		<link rel="stylesheet" href="public/css/layui.css" />
+		<script src="public/js/jquery-2.1.4.min.js"></script>
+		<script src="public/js/layui.js"></script>
+		<script src="public/js/style.js"></script>
+		<script src="public/js/wwt_style.js"></script>
+	</head>
+	<style type="text/css">
+		.add_sp{
+			float: left;
+			width: 100%;
+			height: 50px;
+		}
+		.add_sp span{
+			float: left;
+			width: 100px;
+			height: 35px;
+			line-height: 35px;
+			text-align: center;
+			margin-left: 20px;
+			color: #fff;
+			background: #01a8ff;
+			cursor: pointer;
+		}
+		.chongzhi{
+			float: left;
+			width: 100%;
+		}
+		.add_content span{
+			width: 80px;
+		}
+		.add_content label{
+			float: left;
+			width: 80px;
+			height: 40px;
+			line-height: 40px;
+		}
+		.add_content label input{
+			width: 15px !important;
+			height: 15px !important;
+			margin-top: 12.5px;
+		}
+	</style>
+	<body style="width: 100%;min-width: 1300px;max-width: 100%;">
+		<div class="add_con none" style="z-index: 9;">
+			<form id="cz_data">
+				<div class="add_content" style="height: 430px;">
+					<i class="layui-icon close">&#x1007;</i>
+					<h2 style="float: left;margin-top: 50px;">会员充值</h2>
+					<p><span>手机号</span><input type="text" name="phone_number" id="id_index" placeholder="请输入手机号"/></p>
+					<p><span>充值金额</span><input type="text" name="num" id="type" placeholder="请输入充值金额"/></p>
+					<p>
+						<span>充值类型</span>
+						<label><input type="radio" name="type" value="1"/>积分</label>
+						<label><input type="radio" name="type"/ value="2">SPS链</label>
+					</p>
+					<p style="margin-top: 40px;"><button type="button" class="sub_btn">充值</button></p>
+				</div>
+			</form>
+		</div>
+		<div class="indexCon">
+			<div class="nav">
+				<div class="logo"><img src="public/images/logo_a.png"/></div>
+				<div class="info">
+					<!--<p style="color: #666;line-height: 40px;font-size:17px">欢迎 <span> 李小二 </span> [HD88]</p>
+					<p style="color: #333;font-size: 14px;line-height: 25px;"> <span> 2018-02-07 18:06 </span> PM</p>-->
+				</div>
+				<div class="right">
+					<button type="button" class="back_btn">退出</button>
+				</div>
+			</div>
+			<div class="leftNav">
+				
+				<ul>
+					<li class="title">
+						<p>
+							<a href="m.php?ctl=index">首页</a>
+							<a href="m.php?ctl=user">会员中心</a>
+							<a href="m.php?ctl=incharge" class="hui">会员充值</a>
+							<a href="m.php?ctl=order">订单中心</a>
+							<a href="m.php?ctl=deal">商品管理</a>
+							<a href="m.php?ctl=type">分类管理</a>
+							<a href="m.php?ctl=conf&act=navagation">系统设置</a> 
+						</p>
+					</li>
+					
+					
+				</ul>
+				
+			</div>
+			<div class="rightCon">
+				
+				<div class="hyzx">
+					<p class="add_sp">
+						<span class="add_btn">会员充值</span>
+					</p>
+					<div class="chongzhi">
+						<table border="0" border-co cellspacing="0" cellpadding="0" id="tab">
+						<tr>
+							<th>ID</th>
+							<th>充值手机号</th>
+							<th>充值时间</th>
+							<th>充值数量</th>
+							<th>详情</th>
+						</tr>
+						{%foreach from=$data item=item1%}
+						<tr>
+							<td>{%$item1.id%}</td>
+							<td>{%$item1.user_phone_number%}</td>
+							<td class="time">{%$item1.time%}</td>
+							<td>{%$item1.num%}</td>
+							<td>{%$item1.msg%}</td>
+						</tr>
+						{%/foreach%}
+					</table>
+					<div id="demo2"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+	
+	//关闭类目弹窗
+	$('.close').click(function(e){
+		close(e);
+	})
+	//打开增加类目
+	$('.add_btn').click(function(){
+		open();
+	})		
+	
+	
+	
+	//充值
+	$(".sub_btn").click(function(){
+		var obj = $("#cz_data").serialize();
+		$.post("m.php?ctl=incharge&act=do_incharge",obj,function(data){
+			if(data){
+				var _data = eval("("+data+")");
+				if(_data.status == true){
+					alert(_data.msg);
+					window.location.reload();
+				}else{
+					alert(_data.msg);
+					return false;
+				}
+			}
+		})
+	})
+	
+	//分页 
+	layui.use(['laypage','layer'],function(){
+		var laypage = layui.laypage,
+		layer = layui.layer;
+		laypage.render({
+			elem:'demo2',
+			count:{%$total_log_count%},
+			curr: function(){ //通过url获取当前页，也可以同上（pages）方式获取  
+	            var p = location.search.match(/p=(\d+)/);  
+	            return p ? p[1] : 1;  
+	        }(),
+			jump: function(obj,first){//点击页码出发的事件  
+	            if(first!=true){//是否首次进入页面  
+	                var currentPage = obj.curr;//获取点击的页码   
+	                window.location.href ="m.php?ctl=incharge&p="+currentPage;  
+	            }  
+	        }  
+		})
+	})
+	
+	jQuery(function($){
+		var time = document.getElementsByClassName('time');
+		for(var i=0;i<time.length;i++){
+			time[i].innerText = date(time[i].innerText);
+		}
+    })
+	</script>
+</html>

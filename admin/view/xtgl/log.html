@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="/public/css/style.css"/>
+		<link rel="stylesheet" href="/public/css/layui.css" />
+		<script src="/public/js/jquery-2.1.4.min.js"></script>
+		<script src="/public/js/layui.js"></script>
+		<script src="/public/js/style.js"></script>
+		<script src="/public/js/wwt_style.js"></script>
+	</head>
+	<body style="width: 100%;min-width: 1300px;max-width: 100%;">
+		<div class="indexCon">
+			<div class="nav">
+				<div class="logo"><img src="/public/images/logo_a.png"/></div>
+				<div class="info">
+					<!--<p style="color: #666;line-height: 40px;font-size:17px">欢迎 <span> 李小二 </span> [HD88]</p>
+					<p style="color: #333;font-size: 14px;line-height: 25px;"> <span> 2018-02-07 18:06 </span> PM</p>-->
+				</div>
+				<div class="right">
+					<button type="button" onclick="back()">退出</button>
+				</div>
+			</div>
+			<div class="leftNav">
+				
+				<ul>
+					<li class="title">
+						<p>
+							<a href="m.php?ctl=index">首页</a>
+							<a href="m.php?ctl=user">会员中心</a>
+							<a href="m.php?ctl=incharge">会员充值</a>
+							<a href="m.php?ctl=order">订单中心</a>
+							<a href="m.php?ctl=deal">商品管理</a>
+							<a href="m.php?ctl=type">分类管理</a>
+							<a href="m.php?ctl=conf&act=navagation" class="hui">系统设置</a> 
+						</p>
+					</li>
+					
+					
+				</ul>
+				
+			</div>
+			<div class="rightCon">
+				<div class="hyzx">
+					<div class="xt_nav">
+						<a class="dh_sz" href="m.php?ctl=conf&act=navagation">导航栏设置</a>
+						<a class="gg_sz" href="m.php?ctl=conf&act=notice">公告设置</a>
+						<a class="cs_sz" href="m.php?ctl=conf&act=argument">参数设置</a>
+						<a class="banner_sz" href="m.php?ctl=conf&act=carousel">轮播图设置</a>
+						<a class="k_sz" href="m.php?ctl=conf&act=kline">K线设置</a>
+						<a class="k_sz" href="m.php?ctl=conf&act=share">分享设置</a>
+						<a class="k_sz xt_nav_active" href="m.php?ctl=log">系统日志</a>
+					</div>
+					<div class="xt_con">
+						<!--导航内容-->
+						
+						<div class="dh_con">
+							<p class="add_sp">
+								
+							</p>
+							<table border="0">
+								<tr>
+									<th>id</th>
+									<th>时间</th>
+									<th>ip地址</th>
+									<th>详情</th>
+								</tr>
+								{%foreach from=$data item=item1%}
+								<tr id="{%$item1.id%}">
+									<td class="id">{%$item1.id%}</td>
+									<td class="time">{%$item1.time%}</td>
+									<td><input class="price" type="text" value="{%$item1.ip%}" disabled="true"/></td>
+									<td>
+										{%foreach from=$item1.msg item=row%}
+										<p>{%$row%}</p>
+										{%/foreach%}
+									</td>
+								</tr>
+								{%/foreach%}
+							</table>
+							<div id="demo2"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+			</div>
+		</div>
+		
+	</body>
+	<script>
+	
+	
+	
+
+	
+	
+	
+
+	//分页
+	layui.use(['laypage','layer'],function(){
+		var laypage = layui.laypage,
+		layer = layui.layer;
+		laypage.render({
+			elem:'demo2',
+			count:{%$total_count%},
+			curr: function(){ //通过url获取当前页，也可以同上（pages）方式获取  
+	            var p = location.search.match(/p=(\d+)/);  
+	            return p ? p[1] : 1;  
+	        }(),
+			jump: function(obj,first){//点击页码出发的事件  
+	            if(first!=true){//是否首次进入页面  
+	                var currentPage = obj.curr;//获取点击的页码   
+	                window.location.href ="m.php?ctl=log&p="+currentPage;  
+	            }  
+	        }  
+		})
+	})
+	jQuery(function($){
+		var time = document.getElementsByClassName('time');
+		for(var i=0;i<time.length;i++){
+			time[i].innerText = date(time[i].innerText);
+		}
+    })
+	</script>
+</html>

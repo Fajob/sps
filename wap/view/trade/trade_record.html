@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="/public/css/mui.min.css">
+		<script src="/public/js/jquery-2.1.4.min.js"></script>
+		<script src="/public/js/wwt_style.js"></script>
+		<link rel="stylesheet" type="text/css" href="/public/css/media-100.css"/>
+		<link rel="stylesheet" type="text/css" href="/public/css/login-style.css"/>
+	    <link rel="stylesheet" href="/public/css/wwt_style.css" />
+	</head>
+	<style type="text/css">
+		.none{
+			display: none;
+		}
+		.wwt_my_jy_color{
+			color: red !important;
+		}
+		.wwt_my_jy_title{
+			height: 45px;
+			border-top: 10px solid #efefef;
+		}
+		.wwt_my_jy_title>div{
+			line-height: 45px;
+			font-size: 16px;
+		}
+		.wwt_my_jy_title>div a{
+			float: right;
+			margin-right: 30px;
+		}
+		.wwt_my_jy_title>div img{
+			width: 15px !important;
+			padding-top: 15px !important;
+		}
+		td{
+			font-size: 12px !important;
+		}
+	</style>
+	<body>
+		<div class="nav">
+			<a href="javascript:history.back(-1)" class="back"></a>
+			交易记录
+			<a href="" class="right"></a>
+		</div>
+		<div class="sps-tsf-guadan">
+			<div class="wwt_my_jy_title">
+				<div class="sps-credits-ex-title">
+					<span>我的交易</span>
+					<a href="javascript:;" class="wwt_my_jy_color"><span>切换我的挂单<img src="/public/web/images/stepin_blue.png" /> </span></a>
+				</div>
+				<div class="sps-credits-ex-title none">
+					<span>我的挂单</span>
+					<a href="javascript:;"><span>切换我的交易<img src="/public/web/images/stepin_blue.png" /> </span></a>
+				</div>
+			</div>
+			<div class="sps-pay-in-detail">
+				<div class="sps-pay-in-detail-cont">
+					<table>
+						<thead>
+							<tr>
+								<td>类型</td>
+								<td>日期</td>
+								<td>价格</td>
+								<td>数量</td>
+								<td>操作</td>
+							</tr>
+						</thead>
+						<tbody>
+							{%foreach from=$trade_list item=row1%}
+							<tr>
+								<td>{%if $row1.type eq buy%} 购买{%else%}出售{%/if%}</td>
+								<td class="time">{%$row1.c_time%}</td>
+								<td>{%$row1.price%}</td>
+								<td>{%$row1.num%}</td>
+								<td style="color: #03A703;">
+									{%if $row1.status eq 0%}待付款
+									{%else if $row1.status eq 1%}待收款
+									{%else%}完成
+									{%/if%}
+								</td>
+							</tr>
+							{%/foreach%}
+						</tbody>
+					</table>
+				</div>
+				<div class="sps-pay-in-detail-cont none">
+					<table>
+						<thead>
+							<tr>
+								<td>类型</td>
+								<td>日期</td>
+								<td>价格</td>
+								<td>数量</td>
+								<td>操作</td>
+							</tr>
+						</thead>
+						<tbody>
+							{%foreach from=$punish_list item=row2%}
+							<tr>
+								<td>{%if $row2.type eq buy%} 购买{%else%}出售{%/if%}</td>
+								<td class="time">{%$row2.time%}</td>
+								<td>{%$row2.price%}</td>
+								<td>{%$row2.num-$row2.cj_num%}</td>
+								<td style="color: #03A703;">
+									{%if $row2.status eq 1%}交易中
+									{%else if $row2.status eq 0%}撤回
+									{%else%}完成
+									{%/if%}
+								</td>
+							</tr>
+							{%/foreach%}
+						</tbody>
+					</table>
+				</div>
+			</div>
+	</body>
+	<script>
+		$(".wwt_my_jy_title div").click(function(){
+			$(this).addClass("none");
+			$(this).siblings().removeClass("none");
+			var index = $(this).index();
+			$(".sps-pay-in-detail-cont").eq(index).addClass("none").siblings().removeClass("none")
+			
+		})		
+		jQuery(function($){
+			var time = document.getElementsByClassName('time');
+			for(var i=0;i<time.length;i++){
+				time[i].innerText = date(time[i].innerText);
+			}
+	    })
+	</script>
+</html>

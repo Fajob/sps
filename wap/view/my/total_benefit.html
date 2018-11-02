@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	    <title></title>
+	    <script src="/public/js/jquery-2.1.4.min.js"></script>
+		<script src="/public/js/layer/layer.js"></script>
+	    <script src="/public/js/wwt_style.js"></script>
+	    <link href="/public/css/mui.min.css" rel="stylesheet"/>
+	    <link rel="stylesheet" href="/public/css/wwt_style.css" />
+	    <style>
+	    	.static tr th{
+	    		width: 25% !important;
+	    	}
+	    	.dynamic tr th{
+	    		width: 25% !important;
+	    	}
+	    	.reward tr th{
+	    		width: 20% !important;
+	    	}
+	    	.wwt_total_sy .wwt_sy_fl span{
+	    		width: 50%;
+	    	}
+	    	.wwt_sy_con p a{
+	    		width: 50%;
+	    	}
+	    </style>
+	</head>
+	<body>
+		<div class="nav">
+			<a href="javascript:history.back(-1)" class="back"></a>
+			总收益
+			<a href="javascript:;" class="right"></a>
+		</div>
+		<div class="wwt_total_sy">
+			<p>今日收益</p>
+			<p class="wwt_sy">{%$daily_total_reward%}</p>
+			<p>总收益: <span id="static_dynamic"></span></p>
+			<p class="wwt_sy_fl">
+				<span>持币算力:<big>{%$user_info.static_reward%}</big></span>
+				<span class="wwt_sy_fl_center">推广算力:<big>{%$user_info.dynamic_reward%}</big></span>
+				<!--<span>本金:<big>{%$user_info.sc_chain%}</big></span>-->
+			</p>
+		</div>
+		<div class="wwt_sy_con">
+			<p>
+				<a href="javascript:;" class="sy_active">持币算力</a>
+				<a href="javascript:;">推广算力</a>
+				<!--<a href="javascript:;">本金返还</a>-->
+			</p>
+			<div class="wwt_zsy_table">
+				<table border="0" class="static">
+					<tr style="background-color: #e3ecf1;">
+						<th>日期</th>
+						<th>购物链</th>
+						<th>收益比例</th>
+						<th>获得</th>
+					</tr>
+					{%foreach from=$static_reward_list.data item=item1%}
+					<tr>
+						<td class="time">{%$item1.time%}</td>
+						<td class="baseNumS">{%$item1.base_num%}</td>
+						<td class="rateS"></td>
+						<td class="numS">{%$item1.num%}</td>
+					</tr>
+					{%/foreach%}
+				</table>
+				<table border="0" class="dynamic none">
+					<tr style="background-color: #e3ecf1;">
+						<th>日期</th>
+						<th>奖励</th>
+						<th>比例</th>
+						<th>详情</th>
+					</tr>
+					{%foreach from=$dynamic_reward_list.data item=item1%}
+					<tr>
+						<td class="time">{%$item1.time%}</td>
+						<td class="numD">{%$item1.num%}</td>
+						<input type="hidden" class="baseNumD" value="{%$item1.base_num%}"/>
+						<td class="rateD"></td>
+						<td class="msg">{%$item1.msg%}</td>
+					</tr>
+					{%/foreach%}
+				</table>
+				<!--<table border="0" class="reward none">
+					<tr style="background-color: #e3ecf1;">
+						<th>日期</th>
+						<th>本金</th>
+						<th>锁仓天数</th>
+						<th>返还</th>
+						<th>剩余</th>
+					</tr>
+					{%foreach from=$reback_list.data item=item1%}
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					{%/foreach%}
+				</table>-->
+			</div>			
+		</div>
+	</body>
+	<script>
+		$(".wwt_sy_con p a").click(function(){
+			$(this).addClass("sy_active").siblings().removeClass("sy_active");
+			var index = $(this).index();
+			$(".wwt_zsy_table>table").eq(index).removeClass("none").siblings().addClass("none")
+		})
+		//数据接口
+		var staticR = '{%$user_info.static_reward%}';
+		var dynamicR = '{%$user_info.dynamic_reward%}';
+		$('#static_dynamic').text((parseFloat(staticR)+parseFloat(dynamicR)).toFixed(2));
+		/*时间戳转换*/
+		var time = document.getElementsByClassName('time');
+		for(var i=0;i<time.length;i++){
+			time[i].innerText = dateNoTime(time[i].innerText);
+		}
+		/*比例计算-静态*/
+		var baseNumS = document.getElementsByClassName('baseNumS');
+		var numS = document.getElementsByClassName('numS');
+		var rateSE = document.getElementsByClassName('rateS');
+		for(var i=0;i<rateSE.length;i++){
+			rateSE[i].innerText = rate(baseNumS[i].innerText,numS[i].innerText)+'%';
+		}
+		/*比例计算-动态*/
+		var baseNumD = document.getElementsByClassName('baseNumD');
+		var numD = document.getElementsByClassName('numD')
+		var rateDE = document.getElementsByClassName('rateD');
+		for(var i=0;i<rateDE.length;i++){
+			rateDE[i].innerText = rateD(baseNumD[i].value,numD[i].innerText)+'%';
+		}
+		/*下拉加载*/
+		var p = 1;
+		var id = {%$user_info.id%};
+		if($('.sy_active').text() == '持币算力'){
+			$(window).on('scroll', function() {
+			if($(window).scrollTop() >= $(document).height() - $(window).height()) {
+				p++;
+				$.post('api/index.php?ctl=sc&act=get_static_reward_list' ,{'p':p,"id":id}, function(data) {
+					if(data) {
+						var obj = eval('(' + data + ')')
+						if(obj.status == true) {
+							var _data = obj.data;
+							for(var i = 0;i<_data.length;i++){
+								$tr = $("<tr><td class='time'>"+dateNoTime(_data[i].time)+"</td><td>"+_data[i].base_num+"%</td><td>"+rate(_data[i].base_num,_data[i].num)+"</td><td>"+_data[i].num+"</tr>");
+								$tr.appendTo($("tbody"));
+							}
+						} else {
+							layer.msg(obj.msg, function() {
+
+							});
+						}
+					} else {
+						alert('服务器返回一个错误')
+					}
+				})
+			}
+		})
+		}else{
+			$(window).on('scroll', function() {
+			if($(window).scrollTop() >= $(document).height() - $(window).height()) {
+				p++;
+				$.post('api/index.php?ctl=sc&act=get_dynamic_reward_list' ,{'p':p,"id":id}, function(data) {
+					if(data) {
+						var obj = eval('(' + data + ')')
+						if(obj.status == true) {
+							var _data = obj.data;
+							for(var i = 0;i<_data.length;i++){
+								$tr = $("<tr><td class='time'>"+dateNoTime(_data[i].time)+"</td><td>"+_data[i].num+"%</td><td>"+rateD(_data[i].base_num,_data[i].num)+"</td><td>"+_data[i].msg+"</tr>");
+								$tr.appendTo($("tbody"));
+							}
+						} else {
+							layer.msg(obj.msg, function() {
+
+							});
+						}
+					} else {
+						alert('服务器返回一个错误')
+					}
+				})
+			}
+		})
+		}
+		
+	</script>
+</html>

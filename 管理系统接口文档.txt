@@ -1,0 +1,421 @@
+1.管理员登录退出:
+	（1）管理员登录
+	POST: m.php?ctl=admin&act=do_login
+	body: m_user_name=xxx   (明文)
+	      user_pwd=xxx    	(明文)
+	返回结果：
+	{
+		"ststus":xxx   （true or false）为true表示登录成功，false表示登录失败
+		"msg":xxxx      
+	}
+	（2）管理员退出
+	GET：m.php?ctl=admin&act=do_loginout
+	{
+		"ststus":xxx   （true or false）为true表示退出成功，false表示退出失败
+		"msg":xxxx      
+	}
+
+2.会员管理页面:
+	(1)会员管理首页
+	GET: m.php?ctl=user&p=0    p表示第几页
+	返回数据
+	{%$title%}	标题
+	{%$data%}	会员数据
+	{%page_num%}	分页数目
+		{
+			"count":4
+			"page_num":1
+			"users_info":{["id":1,"user_name":xxx,...],[]}
+		}
+	备注:可以以post的形式访问，post body 里面带过滤key-value
+	body：id=xxx
+	      user_name=xxx
+	      p_id=xxx
+	      phone_number=xxx
+	      
+	
+	（2）添加会员
+	POST：m.php?ctl=user&act=do_add
+	body：user_name=xxx
+	      user_pwd=xxx
+	      user_level=xxx
+	      p_id=xxx
+	      phone_number=xxx
+	      (body里面包含会员信息里面的所有字段，除user_name和user_pwd外其他字段可为空不传)
+
+	返回结果：
+	{
+		"status":xxx(true or false)
+		"msg":"xxxxx"
+	}
+	（3）删除会员
+	POST：m.php?ctl=user&act=do_delete
+	body：id=xxx(删除的用户的id)
+	返回结果：
+	{
+		"status":xxx(true or false)
+		"msg":"xxxxx"
+	}
+	
+	（4）更新会员信息
+	POST：m.php?ctl=user&act=do_update
+	body：user_name=xxx
+	      user_pwd=xxx
+	      user_level=xxx
+	      p_id=xxx
+	      phone_number=xxx
+	      (body里面包含会员信息里面的所有字段)
+	返回结果：
+	{
+		"status":xxx(true or false)
+		"msg":"xxxxx"
+	}
+	
+	（5）用户图像上传
+	POST：m.php?ctl=image&act=user_avastar
+	body：id=xxx	  (用户的id)
+	      image=xxxx （图片的内容）
+	返回结果：
+	{
+		"status":xxx(true or false)
+		"msg":"xxxxx"
+	}
+
+
+	（6）获取充值记录
+	GET: m.php?ctl=incharge&p=0    p表示第几页
+	
+
+	（7）充值
+	POST：m.php?ctl=incharge&act=do_incharge
+	body：phone_number=xxx
+	      type=1或2  	（1 积分  ， 2 sps链）
+	      num=xxx		（可正可负不为0）
+	返回结果：
+	{
+		"status":xxx(true or false)
+		"msg":"xxxxx"
+	}
+
+2.商品管理页面
+	(1)商品管理首页
+	GET: m.php?ctl=deal&p=0    p表示第几页
+	返回数据
+	{%$title%}	标题
+	{%$data%}	商品数据
+	{%page_num%}	分页数目
+		{
+			"count":4
+			"page_num":1
+			"deals_info":{["id":1,"deal_name":xxx,"type":xxx,"img":xxx,"img1":xxx,"img2":xxx,"img3":xxx,"origin_price":xxx,"current_price":xxx,"is_effect":xxx,"brief":xxx,"index_id":xxx,"stock":xxxx],[]}
+		}
+
+	备注:可以以post的形式访问，post body 里面带过滤key-value
+	body：id=xxx
+	      deal_name=xxx
+		
+	
+	（2）添加商品
+	POST：m.php?ctl=deal&act=do_add
+	body：deal_name=xxx
+
+	      (body里面包含商品信息里面的所有字段，除deal_name外其他字段可为空不传)
+
+	返回结果：
+	{
+		"status":xxx(true or false)
+		"msg":"xxxxx"
+	}
+	（3）删除商品
+	POST：m.php?ctl=deal&act=do_delete
+	body：id=xxx(删除的用户的id)
+	返回结果：
+	{
+		"status":xxx(true or false)
+		"msg":"xxxxx"
+	}
+	
+	（4）更新商品信息
+	POST：m.php?ctl=deal&act=do_update
+	body：id=xxx
+	      (body里面包含会员信息里面的所有字段)
+	返回结果：
+	{
+		"status":xxx(true or false)
+		"msg":"xxxxx"
+	}
+	
+	（5）商品图像上传
+	POST：m.php?ctl=image&act=deal_img
+	body：id=xxx	  (商品的id)
+	      image=xxxx （图片的内容）
+	返回结果：
+	{
+		"status":xxx(true or false)
+		"msg":"xxxxx"
+	}
+
+	（6）获取分类
+	GET：m.php?ctl=type
+	返回数据
+	{%$title%}	标题
+	{%$data%}	分类数据
+	[{"id":xxx,"type":xxx,"id_index":xxx},.....]
+	（7）添加分类
+	POST：m.php?ctl=type&act=do_add
+	body：type=xxxx
+	      index_id=xxx
+	（8）删除分类
+	POST：m.php?ctl=type&act=do_del
+	body：id=xxx
+	（9）修改分类
+	POST：m.php?ctl=type&act=do_update
+	body：id=xxx
+	      type=xxxx
+	      index_id=xxx
+
+3.订单管理页面
+	（1）订单管理首页
+	GET：m.php?ctl=order&p=0      p表示第几页
+	返回数据
+	{%$title%}	标题
+	{%$data%}	订单数据
+	{%page_num%}	分页数目
+		{
+			"count":4
+			"page_num":1
+			"orders_info":{["id":1,"order_sn":xxx,...],[]}
+		}
+
+	备注:可以以post的形式访问，post body 里面带过滤key-value
+	body：id=xxx
+	      order_sn=xxx
+	      deal_name=xxxx
+	      user_name=xxx
+	      deal_id=xxxx
+	      user_id=xxxx
+	      order_status=xxxx	
+
+	（2）更新订单状态
+	POST：m.php?ctl=order&act=do_update
+	body：id=xxx
+	      order_status=xxxx
+	      express_num=xxxxx
+
+	      (body里面包含id,order_status,express_num，express_num可为空不传，为空表示不需要配送，否则为订单号)
+	返回结果：
+	{
+		"status":xxx(true or false)
+		"msg":"xxxxx"
+	}	
+	
+	
+	（3）删除订单
+	POST：m.php?ctl=order&act=do_delete
+	body：id=xxx(删除的用户的id)
+	返回结果：
+	{
+		"status":xxx(true or false)
+		"msg":"xxxxx"
+	}
+
+4.系统设置页面
+
+
+	（1）导航栏设置（）
+		1.获取导航栏详情
+		GET：m.php?ctl=conf&act=navagation
+			返回数据
+			{%$title%}	标题
+			{%$data%}	数据
+
+		2.添加导航栏
+		POST：m.php?ctl=conf&act=do_add_navigation
+		body：id_index=xxx
+		      img=xxx
+		      name=xxx
+		      link=xxx
+		返回结果：
+		{
+			"status":xxx(true or false)
+			"msg":"xxxxx"
+		}
+		3.删除导航栏
+		POST：m.php?ctl=conf&act=do_del_navigation
+		body：id=xxx
+		返回结果：
+		{
+			"status":xxx(true or false)
+			"msg":"xxxxx"
+		}
+		4.修改导航栏
+		POST：m.php?ctl=conf&act=do_update_navigation
+		body：id=xxx
+		      id_index=xxx
+		      img=xxx
+		      link=xxx
+		返回结果：
+		{
+			"status":xxx(true or false)
+			"msg":"xxxxx"
+		}
+
+	（2）轮播图设置（）
+		1.获取轮播图详情
+		GET：m.php?ctl=conf&act=carousel
+			返回数据
+			{%$title%}	标题
+			{%$data%}	数据
+
+		2.添加轮播图
+		POST：m.php?ctl=conf&act=do_add_carousel
+		body：index=xxx
+		      img=xxx
+		      link=xxx
+		返回结果：
+		{
+			"status":xxx(true or false)
+			"msg":"xxxxx"
+		}
+		3.删除轮播图
+		POST：m.php?ctl=conf&act=do_del_carousel
+		body：id=xxx
+		返回结果：
+		{
+			"status":xxx(true or false)
+			"msg":"xxxxx"
+		}
+		4.修改轮播图
+		POST：m.php?ctl=conf&act=do_update_carousel
+		body：id=xxx
+		      id_index=xxx
+		      img=xxx
+		      link=xxx
+		返回结果：
+		{
+			"status":xxx(true or false)
+			"msg":"xxxxx"
+		}
+
+	（3）公告设置()
+		1.获取公告详情
+		GET：m.php?ctl=conf&act=notice
+			返回数据
+			{%$title%}	标题
+			{%$data%}	数据
+
+		2.添加公告
+		POST：m.php?ctl=conf&act=do_add_notice
+		body：title=xxx
+		      detail=xxx
+		返回结果：
+		{
+			"status":xxx(true or false)
+			"msg":"xxxxx"
+		}
+		3.删除公告
+		POST：m.php?ctl=conf&act=do_del_notice
+		body：id=xxx
+		返回结果：
+		{
+			"status":xxx(true or false)
+			"msg":"xxxxx"
+		}
+		4.修改公告
+		POST：m.php?ctl=conf&act=do_update_notice
+		body：id=xxx
+		      date=xxx
+		      detail=xxx
+		返回结果：
+		{
+			"status":xxx(true or false)
+			"msg":"xxxxx"
+		}
+
+
+	（4）k线价格设置
+		1.获取k线
+		GET：m.php?ctl=conf&act=kline
+			返回数据
+			{%$title%}	标题
+			{%$data%}	数据
+
+		2.添加k线
+		POST：m.php?ctl=conf&act=do_add_kline
+		body：date=xxx
+		      price=xxx
+		返回结果：
+		{
+			"status":xxx(true or false)
+			"msg":"xxxxx"
+		}
+		3.删除k线
+		POST：m.php?ctl=conf&act=do_del_kline
+		body：id=xxx
+		返回结果：
+		{
+			"status":xxx(true or false)
+			"msg":"xxxxx"
+		}
+		4.修改k线
+		POST：m.php?ctl=conf&act=do_update_kline
+		body：id=xxx
+		      date=xxx
+		      price=xxx
+		返回结果：
+		{
+			"status":xxx(true or false)
+			"msg":"xxxxx"
+		}
+
+	（5）代理及返利设置
+
+		1.获取参数
+		GET：m.php?ctl=conf&act=argument
+			返回数据
+			{%$title%}	标题
+			{%$data%}	数据
+		2.修改参数
+		POST：m.php?ctl=conf&act=do_update_argument
+	
+    需要配置的参数：
+	
+
+	普通节点持币量总价值：node_1_coins_money
+	普通节点拿多少代的收益：node_1_get_generations
+
+	优质节点持币量总价值：node_2_coins_money
+	优质节点拿多少代的收益：node_2_get_generations
+
+	极速节点持币量总价值：node_3_coins_money
+	极速节点拿多少代的收益：node_3_get_generations
+
+	超级节点持币量总价值：node_4_coins_money
+	超级节点拿多少代的收益：node_4_get_generations
+
+
+	静态收益率：static_rate
+
+	前dynamic_generation_1代动态收益率：dynamic_rate_1
+	前dynamic_generation_2代动态收益率：dynamic_rate_2
+
+	锁仓链锁定期：sc_days
+	每几天释放:sc_release_days
+	每次释放剩余的百分比：sc_release_rate
+
+	代理商中心:
+	县代理：团队最低业绩：proxy_1_consume_min
+		最少直推用户数：proxy_1_direct_min
+		每个直推用户的最低业绩要求（包含伞下）：proxy_1_direct_consume_min
+	市代理：团队最低业绩：proxy_2_consume_min
+		最少直推用户数：proxy_2_direct_min
+		线下最低县代理数:proxy_2_proxy1__min
+	省代理：团队最低业绩：proxy_3_consume_min
+		最少直推用户数：proxy_3_direct_min
+		线下最低市代理数:proxy_3_proxy2__min
+
+
+
+		
+
+

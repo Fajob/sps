@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>地址管理</title>
+		<script src="/public/js/jquery-2.1.4.min.js"></script>
+		<script src="public/js/layer/layer.js"></script>
+		<script src="/public/js/wwt_style.js"></script>
+		<link href="/public/css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="/public/css/wwt_style.css" />
+	</head>
+	<style type="text/css">
+		ul:after {
+			height: 0 !important;
+		}
+		
+		ul:before {
+			height: 0 !important;
+		}
+		
+		ul {
+			border-top: 5px solid #efefef;
+		}
+		
+		.mui-navigate-right:after,
+		.mui-push-left:after,
+		.mui-push-right:after {
+			font-family: Muiicons;
+			font-size: 26px;
+			line-height: 1;
+			position: absolute;
+			top: 50%;
+			display: inline-block;
+			-webkit-transform: translateY(-50%);
+			transform: translateY(-50%);
+			text-decoration: none;
+			color: #bbb;
+			-webkit-font-smoothing: antialiased;
+		}
+		
+		.mui-table-view-cell:after {
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			left: 0px;
+			height: 1px;
+			content: '';
+			-webkit-transform: scaleY(.5);
+			transform: scaleY(.5);
+			background-color: #c8c7cc;
+		}
+		
+		li {
+			font-size: 14px;
+			line-height: 40px;
+		}
+		
+		li input {
+			text-align: left !important;
+		}
+		
+		li p {
+			float: left;
+			width: 100%;
+			height: 30px;
+			color: #333;
+		}
+		
+		.mui-icon-checkmarkempty:before {
+			content: '\e472';
+			position: relative;
+			right: 6px;
+		}
+		
+		label {
+			float: left;
+			width: 100%;
+			height: 100%;
+			position: relative;
+			color: #333;
+		}
+		
+		label input {
+			position: absolute;
+			left: 0;
+			top: 0;
+			opacity: 0;
+		}
+	</style>
+
+	<body style="background-color: #efefef;">
+		<div class="nav">
+			<a href="javascript:;" class="back"></a>
+			地址管理
+			<a href="javascript:;" class="right"></a>
+		</div>
+		{%foreach from=$address item=row%}
+		<ul class="mui-table-view">
+			<li class="mui-table-view-cell">
+				<p>
+					<span class="wwt_address_name" id="{%$user_info.id%}">{%$row.user_name%}</span>
+					<span class="wwt_address_mobile">{%$row.user_phone%}</span>
+				</p>
+				<p class="wwt_address_con"><span class="wwt_address_con_addr">{%$row.address%}</span>&nbsp;<span class="wwt_address_con_addr1">{%$row.address1%}</span> </p>
+			</li>
+			<div class="wwt_adddress_set">
+				{%if $row.is_default eq 0%}
+				<p>
+					<label class="no_moren" name="{%$row.is_default%}">
+						<input type="radio" name="moren_select"/>
+						<span class="mui-icon"></span>默认地址
+					</label>
+				</p>
+				{%else%}
+				<p>
+					<label name="{%$row.is_default%}" class="wwt_select_label">
+						<input type="radio" name="moren_select"/>
+						<span class="mui-icon mui-icon-checkmarkempty wwt_select_address"></span>默认地址
+					</label>
+				</p>
+				{%/if%}
+				<p style="text-align: right;font-size: 12px;">
+					<a href="javascript:;" class="wwt_del_address" id="{%$row.address_id%}"><span class="mui-icon mui-icon-trash"></span>删除</a>
+					<a href="index.php?ctl=setting&act=edit_address&address_id={%$row.address_id%}"><span class="mui-icon mui-icon-compose"></span>编辑</a>
+				</p>
+
+			</div>
+		</ul>
+		{%/foreach%}
+		<a href="index.php?ctl=setting&act=add_address" class="wwt_add_address"><span class="mui-icon mui-icon-plus"></span>添加新地址</a>
+		<!--删除提示-->
+		<div class="sign_out_con none">
+			<div>
+				<p class="out_con">您确定要删除吗？</p>
+				<p class="out_choose">
+					<a href="javascript:;" class="wwt_sign_close" onclick="wwt_close()">取消</a>
+					<a href="javascript:;" class="wwt_sign_sure">确认</a>
+				</p>
+			</div>
+		</div>
+	</body>
+	<script>
+		//选择默认地址
+		//$(".no_moren").click(function(){
+		var thisURL = document.URL;
+		var getval = thisURL.split('&');
+		getval = getval[getval.length - 1];
+		showval = getval.split('=');
+		$('.back').click(function() {
+			if(showval[0] == 'addr' && showval[1] == 1) {
+				$('.back').attr('href', 'index.php?ctl=mall&act=cart_detail&addr=2')
+			} else if(showval[0] == 'num') {
+				window.location.href = 'javascript:history.back(-1)';
+			} else {
+				window.location.href = 'index.php?ctl=setting';
+			}
+		})
+		$(".wwt_adddress_set").on("click", ".no_moren", function() {
+			$(this).addClass("wwt_select_label");
+			$(this).children("span").addClass("mui-icon-checkmarkempty wwt_select_address");
+			$(this).parents(".mui-table-view").siblings().find("label").removeClass("wwt_select_label");
+			$(this).parents(".mui-table-view").siblings().find("label").children("span").removeClass("mui-icon-checkmarkempty wwt_select_address");
+			var id = $(this).parents(".mui-table-view").find(".wwt_address_name").attr("id");
+			var address_id = $(this).parents(".mui-table-view").find(".wwt_del_address").attr("id");
+			var address = $(this).parents(".mui-table-view").find(".wwt_address_con .wwt_address_con_addr").text();
+			var address1 = $(this).parents(".mui-table-view").find(".wwt_address_con .wwt_address_con_addr1").text();
+			var user_name = $(this).parents(".mui-table-view").find(".wwt_address_name").text();
+			var user_phone = $(this).parents(".mui-table-view").find(".wwt_address_mobile").text();
+			var is_default = $(this).attr("name");
+			if(is_default == 0) {
+				is_default = 1;
+			} else {
+				is_default = 0;
+			}
+			$.ajax({
+				type: "post",
+				url: "api/index.php?ctl=user&act=do_update_address",
+				data: {
+					"id": id,
+					"address_id": address_id,
+					"address": address,
+					"address1": address1,
+					"user_name": user_name,
+					"user_phone": user_phone,
+					"is_default": is_default
+				},
+				dataType: "json",
+				success: function(data) {
+					if(data.status == true) {
+						if(showval[0] == 'addr' && showval[1] == 1) {
+							window.location.href = 'index.php?ctl=mall&act=cart_detail&addr=2'
+						} else if(showval[0] == 'num') {
+							window.location.href = 'javascript:history.back(-1)';
+						} else {
+							window.location.reload();
+						}
+					} else {
+						layer.msg(data.msg, function() {});
+					}
+				}
+			});
+		})
+
+		//删除地址
+		var id;
+		var address_id;
+		$(document).on("click", ".wwt_del_address", function() {
+			tishi();
+			id = $(this).parents("ul").find(".wwt_address_name").attr("id");
+			address_id = $(this).attr("id");
+			return id;
+			return address_id;
+		})
+		$('.wwt_sign_sure').click(function() {
+			$.post("api/index.php?ctl=user&act=do_del_address", {
+				"address_id": address_id,
+				"id": id
+			}, function(data) {
+				if(data) {
+					var _data = eval("(" + data + ")");
+					if(_data.status == true) {
+						alert("删除成功");
+						window.location.reload();
+					} else {
+						layer.msg(_data.msg, function() {});
+					}
+				}
+			})
+		})
+	</script>
+
+</html>

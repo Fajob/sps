@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="/public/js/jquery-2.1.4.min.js"></script>
+    <script src="/public/js/mui.min.js"></script>
+    <script src="/public/js/layer/layer.js"></script>
+    <script src="/public/js/buy_sell.js"></script>
+    <script src="/public/js/echarts.min.js"></script>
+    <script src="/public/js/wwt_style.js"></script>
+    <link href="/public/css/mui.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/public/css/wwt_style.css" />
+</head>
+<style type="text/css">
+	.center_info{
+		min-width: 120px;
+	}
+</style>
+<body>
+	<div class="nav">
+		<a href="index.php?ctl=user&act=home" class="back"></a>
+		资产交易
+		<a href="javascript:;" class="right"></a>
+	</div>
+	<div class="wwt_asset_jy" style="border-top: 1px solid #ddd;">
+		<div class="release_dd">
+			<p>SPS资产: <span>{%$user_info.cz_chain%}</span></p>
+			<a href="index.php?ctl=trade&act=index">发布订单</a>
+		</div>
+		<div class="wwt_deal_xx">
+			<p class="wwt_dq_price">
+				当前价格
+				<span>
+					<small>￥</small>{%$coin_price%}
+				</span>
+			</p>
+			<p class="wwt_max_price">
+				最高价: <span class="max"></span>
+			</p>
+			<p class="wwt_min_price">
+				最低价: <span class="min"></span>
+			</p>
+			<p class="wwt_zf" style="width: 50%;">
+				涨幅: <span class="zf"></span>
+			</p>
+		</div>
+		<div class="clear"></div>
+		<!--K线图-->
+		<div class="d_card" id="line"></div>
+		<!--K线图end-->
+		<div class="clear"></div>
+		<div class="wwt_jy_biao">
+			<ul>
+				<li><a href="javascript:;" class="wwt_dd_active">购买列表</a></li>
+				<li><a href="javascript:;">出售列表</a></li>
+			</ul>
+			<div class="wwt_jy_con">
+				
+				
+				<div class="wwt_biao_con">
+					{%foreach from=$sale_list.data item=row%}
+					<div class="wwt_son">
+						<div class="left_img">
+							<img src="{%$row.user_avatar%}"/>
+						</div>
+						<div class="center_info" style="margin-right: 0;">
+							<p class="name">{%$row.user_name%}</p>
+							<p class="price" style="margin-right: 5px;">
+								单价: <span class="qg_price" id="">{%$row.price%}</span>
+							</p>
+							<p class="num">
+								数量: <span class="qg_num" id="">{%$row.num-$row.cj_num%}</span>
+							</p>
+						</div>
+						<div class="right_cz">
+							<p class="time">{%$row.time%}</p>
+							<button type="button" id="{%$row.order_id%}" value="{%$user_info.id%}" class="zc_cs">出售</button>
+						</div>
+					</div>
+					{%/foreach%}
+				</div>
+				
+				
+				<div class="wwt_biao_con none">
+					{%foreach from=$buy_list.data item=row1%}
+					<div class="wwt_son">
+						<div class="left_img">
+							<img src="{%$row1.user_avatar%}"/>
+						</div>
+						<div class="center_info" style="margin-right: 0;">
+							<p class="name gm_name">{%$row1.user_name%}</p>
+							<p class="price" style="margin-right: 5px;">
+								单价: <span class="gm_price" id="">{%$row1.price%}</span>
+							</p>
+							<p class="num">
+								数量: <span class="gm_num">
+										{%$row1.num-$row1.cj_num%}
+								</span>
+							</p>
+						</div>
+						<div class="right_cz">
+							<p class="time">{%$row1.time%}</p>
+							<button type="button" id="{%$row1.order_id%}" value="{%$user_info.id%}" class="zc_gm">购买</button>
+						</div>
+					</div>
+					{%/foreach%}
+				</div>
+			</div>
+			
+		</div>
+		<div class="mm none">
+			
+			<div class="mm_con buy_num none">
+				<p class="mm_title">
+					<span>出售SPS</span>
+					<button type="button" onclick="none()">×</button>
+				</p>
+				<p class="mm_info">
+					SPS资产: <span>{%$user_info.cz_chain%}</span>
+				</p>
+				<p class="mm_infos">
+					<span>买入价格:<b class="xq_price" id="cs_price">1.2632</b>元</span>
+					<span style="text-align: right;">需求数量:<b class="xq_num">300</b></span>
+				</p>
+				<p class="num_pwd" style="margin-top: 5px;">
+					<span>数量</span>
+					<input type="text" id="cs_num" name="" placeholder="请输入交易数量"/>
+				</p>
+				<p class="num_pwd">
+					<span>密码</span>
+					<input type="password" id="cs_pwd" name="" placeholder="请输入交易密码"/>
+				</p>
+				<button type="button" class="mm_btn cs_btn">确认出售</button>
+			</div>
+			
+			
+			<div class="mm_con sell_num none">
+				<p class="mm_title">
+					<span>购买SPS</span>
+					<button type="button" onclick="none()">×</button>
+				</p>
+				<p class="mm_info">
+					出售用户: <span class="cs_yh" ></span>
+				</p>
+				<p class="mm_infos">
+					<span>出售价格:<b class="gm_price_s"></b>元</span>
+					<span style="text-align: right;">出售数量:<b class="gm_num_s"></b></span>
+				</p>
+				<p class="num_pwd" style="margin-top: 5px;">
+					<span>数量</span>
+					<input class="my_num" type="text" name="" placeholder="请输入交易数量"/>
+				</p>
+				<p class="num_pwd">
+					<span>密码</span>
+					<input type="password" class="my_pwd" name="" placeholder="请输入交易密码"/>
+				</p>
+				<button type="button" class="mm_btn gm_btn">确认购买</button>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+	
+	var date1 = [];
+	{%foreach from=$kline_data item=row%}
+        var t1={%$row.date%}*1000;
+        var d1 = new Date(t1);
+        var d2 = d1.format('MM-dd');
+        date1.push(d2,)
+    {%/foreach%}
+	var line = echarts.init(document.getElementById('line'));
+    line.setOption({
+        color:["#ff9e07"],
+        title: {
+            x: 'left',
+            text: '交易K线图',
+            textStyle: {
+                fontSize: '16',
+                color: '#00a2ff',
+                fontWeight: 100,
+            }
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        xAxis:  {
+            type: 'category',
+            boundaryGap: false,
+            data:date1,//时间数据
+            axisLabel: {
+                interval:0
+            },
+            splitLine: {
+                show: true, //显示多条X轴
+                lineStyle: {
+                    color: ['#ddd']// 改变轴线颜色
+                }                            
+            }
+        },
+        yAxis: {
+            type: 'value',
+             splitLine: {
+                show: false, //显示1条Y轴
+                lineStyle: {
+                    color: ['#ddd']// 改变轴线颜色
+                }                            
+            }
+        },
+        series: [
+            {
+                name:'交易价格',
+                type:'line',
+                data:[{%foreach from=$kline_data item=row1%}
+	            {%$row1.price%},
+	            {%/foreach%}
+	            ],//价格
+                markLine: {data: [{type: 'average', name: '平均值'}]}
+            }
+        ]
+    }) ;
+    
+    jQuery(function($){
+		var time = document.getElementsByClassName('time');
+		for(var i=0;i<time.length;i++){
+			time[i].innerText = date(time[i].innerText);
+		}
+		var arr = [];
+		{%foreach from=$kline_data item=row3%}
+			var t = {%$row3.price%};
+			arr.push(t,);
+	    {%/foreach%}
+	    var max = Math.max.apply(null, arr);
+	    var min = Math.min.apply(null, arr);
+	    var last = arr[arr.length-1];
+	    var _last = arr[arr.length-2];
+	    var zf = ((last-_last)/_last)*100;
+	    $(".max").text(max);
+	    $(".min").text(min);
+	    $(".zf").text(zf.toFixed(2)+"%")
+    })
+ 
+</script>
+</html>

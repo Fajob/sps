@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="public/css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="public/css/media-100.css"/>
+		<link rel="stylesheet" type="text/css" href="public/css/login-style.css"/>
+		<link rel="stylesheet" type="text/css" href="public/css/wwt_style.css"/>
+    	<script src="/public/js/jquery-2.1.4.min.js"></script>
+    	<script src="/public/js/layer/layer.js"></script>
+    	<script src="/public/js/wwt_style.js"></script>
+	</head>
+	<style type="text/css">
+		.sps-save-wallet-status{
+			padding-top: 1px;
+			border-top: 9px solid #efefef;
+		}
+		.sps-initiative-spschain .sps-pay-out-2dcode {
+		    background-color: #f7f7f7;
+		}
+		.hide{
+			display: none;
+		}
+	</style>
+	<body>
+		<div class="nav">
+			<a href="javascript:history.back(-1)" class="back"></a>
+			主动锁SPS链
+			<a href="index.php?ctl=user&act=warm_reminder" class="right hide">
+				<span style="float: right;" class="mui-icon mui-icon-help"></span>
+			</a>
+		</div>
+		<div class="sps-initiative-spschain">
+			<div class="sps-save-wallet-status">
+				<table>
+					<tr>
+						<td>
+							<p style="margin-bottom: 20px;">可用SPS链</p>
+							<span style="color: #F17801;font-size: 24px;">{%$user_info.cz_chain%}</span>
+						</td>
+						<td>
+							<p style="margin-bottom: 20px;">已锁仓</p>
+							<span style="color: #F17801;font-size: 24px;">{%$data.total_num%}</span>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="sps-pay-in-property">
+				<div class="sps-pay-out-2dcode">
+					<p>
+						<span style="color: #000000;">锁仓数额：</span><input id="scNo" type="text" value="" placeholder="请输入锁仓数额"/>
+					</p>
+					<p>
+						<span style="color: #000000;">交易密码：</span><input id="userPwd" type="password" value="" placeholder="请输入交易密码"/>
+					</p>
+					<p class="sps-pay-out-2dcode-btn">
+						<input id="confirmSC" style="margin-top:20px;" type="button" value="确认锁仓"/>
+					</p>
+				</div>
+			</div>
+			<div style="margin-top: -10px;" class="sps-pay-in-detail">
+				<div class="sps-pay-in-detail-title">
+					<img src="public/web/images/detail.png" />
+					<span>锁仓明细</span>
+				</div>
+				<div class="sps-pay-in-detail-cont">
+					<table>
+						<thead>
+							<tr>
+								<td>日期</td>
+								<td>锁仓数额</td>
+								<td>剩余</td>
+							</tr>
+						</thead>
+						<tbody>
+							{%foreach from=$data.data item=item1%}
+							<tr>
+								<td class="time">{%$item1.time%}</td>
+								<td>{%$item1.sc_num%}</td>
+								<td>{%$item1.remaining_num%}</td>
+							</tr>
+							{%/foreach%}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<script>
+			var time = document.getElementsByClassName('time');
+			for(var i = 0; i < time.length; i++) {
+				time[i].innerText = date(time[i].innerText);
+			}
+			var p = 1;
+			var id = {%$user_info.id%};
+			$(window).on('scroll', function() {
+				if($(window).scrollTop() >= $(document).height() - $(window).height()) {
+					p++;
+					$.post('api/index.php?ctl=sc&act=get_sc_list', {
+						"id": id,
+						'p': p
+					}, function(data) {
+						if(data) {
+							var obj = eval('(' + data + ')')
+							if(obj.status == true) {
+								var _data = obj.data.data;
+								for(var i = 0; i < _data.length; i++) {
+									$tr = $("<tr><td class='time'>" + date(_data[i].time) + "</td><td>" + _data[i].sc_num + "</td><td>" + _data[i].remaining_num + "</tr>");
+									$tr.appendTo($("tbody"));
+								}
+							} else {
+								layer.msg(obj.msg, function() {
+
+								});
+							}
+						} else {
+							alert('服务器返回一个错误')
+						}
+					})
+				}
+			})
+			$('#confirmSC').click(function(){
+				var userPwd = $('#userPwd').val();
+				var scNo = $('#scNo').val();
+				$.post('api/index.php?ctl=sc&act=do_sc',{'id':id,'user_pwd':userPwd,'num':scNo},function(data){
+					if(data) {
+							var obj = eval('(' + data + ')')
+							if(obj.status == true) {
+								alert(obj.msg);
+								window.location.reload();
+							} else {
+								layer.msg(obj.msg, function() {
+
+								});
+							}
+						} else {
+							alert('服务器返回一个错误')
+						}
+				})
+			})
+		</script>
+	</body>
+</html>

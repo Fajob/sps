@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="/public/css/mui.min.css">
+		<script src="/public/js/jquery-2.1.4.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="/public/css/media-100.css"/>
+		<link rel="stylesheet" type="text/css" href="/public/css/login-style.css"/>
+		<link rel="stylesheet" type="text/css" href="/public/css/wwt_style.css"/>
+		<style>
+			.sps-save-wallet-ex img{
+				float: right;
+				margin-right: 3rem;
+				margin-left: 0;
+			}
+			.sps-save-wallet-ex p{
+				margin: 0;
+				padding: 0;
+				height: 45px;
+				border-bottom: 1px solid #ddd;
+			}
+			.sps-save-wallet-ex p a{
+				float: left;
+				width: 100%;
+				height: 100%;
+				line-height: 45px;
+			}
+			.sps-save-wallet-ex p a img{
+				margin-top: 10px;
+			}
+			.sps-save-wallet-total p:first-child{
+				padding-top: 42px;
+			}
+			.hide{
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="nav">
+			<a href="javascript:history.back(-1)" class="back"></a>
+			可用SPS链
+			<a href="javascript:;" class="right">
+			</a>
+		</div>
+		<div class="sps-my-spschain-footer"></div>
+		<div class="sps-save-wallet">
+			<div class="sps-save-wallet-total">
+				<p>可用SPS链余额</p>
+				<p class="ze"></p>
+			</div>
+			<div class="sps-save-wallet-ex" style="height: auto;">
+				<p class="hide">
+					<a href="index.php?ctl=user&act=wallet_out_jf">
+						<span>SPS链兑换积分</span>
+						<img src="/public/web/images/step_in.png" />
+					</a>
+				</p>
+				<p>
+					<a href="index.php?ctl=user&act=wallet_out">
+						<span>SPS链转出</span>
+						<img src="/public/web/images/step_in.png" />
+					</a>
+				</p>
+			</div>
+			<div class="sps-save-wallet-warn">
+				<p>提示：所有静态收益、动态收益及本金返还所获得的收益都将自动转入可用SPS链</p>
+			</div>
+		</div>
+	</body>
+	<script>
+		$(window).ready(function(){
+			var a = {%$user_info.cz_chain%};
+			/*var b = {%$user_info.sc_chain%};
+			var c = a + b;*/
+			$(".ze").text(a);
+		})
+	</script>
+</html>

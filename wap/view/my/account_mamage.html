@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	    <title></title>
+	    <script src="js/jquery-2.1.4.min.js"></script>
+	    <script src="js/wwt_style.js"></script>
+	    <link href="css/mui.min.css" rel="stylesheet"/>
+	    <link rel="stylesheet" href="css/wwt_style.css" />
+	</head>
+	<body style="background: #efefef;">
+		<div class="nav">
+			<a href="javascript:history.back(-1)" class="back"></a>
+			账户管理
+			<a href="javascript:;" class="right"></a>
+		</div>
+		<div class="wwt_add_pay">
+			<a href="wwt_bianji_zfb.html" class="label">
+				<div class="pay_img"><img src="images/zfb.png" alt="" /></div>
+				<p style="margin-top: 15px;color: #333;">支付宝</p><br />
+				<p>136123456</p>
+				<label class="right">
+					<input type="radio" name="pay_fs" checked/>
+					<div class="wwt_select wwt_select_active">
+						<span></span>
+					</div>
+				</lable>
+			</a>
+			<a href="wwt_bianji_yhk.html" class="label">
+				<div class="pay_img"><img src="images/yl.png"/></div>
+				<p style="margin-top: 15px;color: #333;">中国银行</p><br />
+				<p>12345678978945612365</p>
+				<label class="right">
+					<input type="radio" name="pay_fs"/>
+					<div class="wwt_select">
+						<span></span>
+					</div>
+				</label>
+			</a>
+		</div>
+		<div class="clear"></div>
+		<div class="wwt_add">
+			<a href="choose_pay.html">+添加收款方式</a>
+		</div>
+	</body>
+	<script>
+		//账户管理选择支付方式效果
+		$("label").click(function(e){
+			$(this).children(".wwt_select").addClass('wwt_select_active');
+			$(this).parent(".label").siblings().find(".wwt_select").removeClass('wwt_select_active');
+		})
+	</script>
+</html>

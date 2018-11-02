@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	    <title></title>
+	    <script src="/public/js/jquery-2.1.4.min.js"></script>
+		<script src="public/js/layer/layer.js"></script>
+	    <script src="/public/js/wwt_style.js"></script>
+	    <link href="/public/css/mui.min.css" rel="stylesheet"/>
+	    <link rel="stylesheet" href="/public/css/wwt_style.css" />
+	</head>
+	<style type="text/css">
+		<style type="text/css">
+		ul:after{
+			height: 0 !important;
+		}
+		ul:before{
+			height: 0 !important;
+		}
+		ul{
+			border-bottom: 5px solid #efefef;
+			border-top: 5px solid #efefef;
+		}
+		.mui-navigate-right:after, .mui-push-left:after, .mui-push-right:after {
+		    font-family: Muiicons;
+		    font-size: 26px;
+		    line-height: 1;
+		    position: absolute;
+		    top: 50%;
+		    display: inline-block;
+		    -webkit-transform: translateY(-50%);
+		    transform: translateY(-50%);
+		    text-decoration: none;
+		    color: #bbb;
+		    -webkit-font-smoothing: antialiased;
+		}
+		.mui-table-view-cell:after {
+		    position: absolute;
+		    right: 0;
+		    bottom: 0;
+		    left: 0px;
+		    height: 1px;
+		    content: '';
+		    -webkit-transform: scaleY(.5);
+		    transform: scaleY(.5);
+		    background-color: #c8c7cc;
+		}
+		li{
+			font-size: 14px;
+			line-height: 40px;
+		}
+	</style>
+	<body style="background: #efefef;">
+		<div class="account_gl_con left">
+			<div class="nav">
+				<a href="javascript:history.back(-1)" class="back"></a>
+				账户管理
+				<a href="javascript:;" class="right"></a>
+			</div>
+			{%foreach from=$data item=item1%}
+			<div class="wwt_add_pay">
+				<a href="javascript:;" class="label">
+					<div class="pay_img">
+						{%if $item1.type eq "支付宝"%}
+						<img src="/public/web/images/zfb.png" alt="支付宝" />
+						{%else%}
+						<img src="/public/web/images/yl.png" alt="银联" />
+						{%/if%}
+					</div>
+					{%if $item1.type eq "银行卡"%}
+						<p style="margin-top: 15px;color: #333;">{%$item1.extra%}</p><br />
+						<p>{%$item1.id_num%}</p>
+					{%else%}
+						<p style="margin-top: 15px;color: #333;">{%$item1.type%}</p><br />
+						<p>{%$item1.id_num%}</p>
+					{%/if%}
+				</a>
+				<!--编辑支付信息-->
+				{%if $item1.type eq "银行卡"%}
+				<div class="edit">
+					<div class="nav">
+						<a href="javascript:;" class="back"></a>
+						银行卡
+						<a href="javascript:;" class="right" id="1" name="2">删除</a>
+					</div>
+					<form>
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell">
+								真实姓名
+								<input type="hidden" class="id" value="{%$user_info.id%}" name="id"/> <!-- 用户ID-->
+								<input type="hidden" class="payment_id" value="{%$item1.payment_id%}" name="payment_id"/><!-- 付款方式ID-->
+								<input type="hidden" value="{%$item1.type%}" name="type"/><!-- 类型ID-->
+								<input type="hidden" value="0" name="is_default"/><!--是否默认-->
+								<input name="user_name" value="{%$item1.user_name%}" type="text" class="wwt_mui_input" />
+							</li>
+							<li class="mui-table-view-cell">
+								银行卡号
+								<input name="id_num" type="text" value="{%$item1.id_num%}"  class="wwt_mui_input" />
+							</li>
+						</ul>
+						<ul class="mui-table-view" style="border-top: 0;">
+							<li class="mui-table-view-cell">
+								开户银行
+								<input name="extra" value="{%$item1.extra%}" type="text" class="wwt_mui_input" />
+							</li>
+							<li class="mui-table-view-cell">
+								开户支行
+								<input name="extra1" value="{%$item1.extra1%}" type="text"  class="wwt_mui_input" />
+							</li>
+						</ul>
+						</form>
+						<button type="button" class="sure_btn edit_btn">保存</button>
+					
+				</div>
+				{%else%}
+				<div class="edit">
+					
+					<div class="nav">
+						<a href="javascript:;" class="back"></a>
+						支付宝
+						<a href="javascript:;" class="right">删除</a>
+					</div>
+					<form>
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell">
+							真实姓名
+							<input type="hidden" class="id" value="{%$user_info.id%}" name="id"/> <!-- 用户ID-->
+							<input type="hidden" class="payment_id" value="{%$item1.payment_id%}" name="payment_id"/><!-- 付款方式ID-->
+							<input type="hidden" value="{%$item1.type%}" name="type"/><!-- 类型ID-->
+							<input type="hidden" value="0" name="is_default"/><!--是否默认-->
+							<input type="text" name="user_name" class="wwt_mui_input" value="{%$item1.user_name%}"/>
+						</li>
+						<li class="mui-table-view-cell">
+							支付宝账户
+							<input type="text" name="id_num" value="{%$item1.id_num%}" class="wwt_mui_input"/>
+						</li>
+					</ul>
+					</form>
+					<button type="button" class="sure_btn edit_btn">保存</button>
+					
+				</div>
+				{%/if%}
+			</div>
+			{%/foreach%}
+			<div class="clear"></div>
+			<div class="wwt_add">
+				<!--<a href="index.php?ctl=account&act=add_account">+添加收款方式</a>-->
+				<a href="javascript:;" id="add_payment">+添加收款方式</a>
+			</div>
+		</div>
+		<div style="clear: both;"></div>
+		<!--添加账户-->
+		<div class="add_payment">
+			<div class="nav">
+				<a href="javascript:;" class="back"></a>
+				选择收款方式
+				<a href="javascript:;" class="right"></a>
+			</div>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell yhk">
+					<a href="javascript:;" class="mui-navigate-right wwt_mui_a" id="go_add_yhk">
+						银行卡
+					</a>
+				</li>
+				<li class="mui-table-view-cell zfb">
+					<a href="javascript:;" class="mui-navigate-right wwt_mui_a" id="go_add_zfb">
+						支付宝
+					</a>
+				</li>
+			</ul>
+		</div>
+		<!--添加银行卡-->
+		<div class="choose_yhk">
+			<div class="nav">
+				<a href="javascript:;" class="back"></a>
+				银行卡
+				<a href="javascript:;" class="right"></a>
+			</div>
+			<form>
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">
+						真实姓名
+						<input type="hidden" name="id" value="{%$user_info.id%}"/>
+						<input type="hidden" name="type" value="银行卡"/>
+						<input name="user_name" type="text" class="wwt_mui_input" placeholder="请输入持卡人真实姓名"/>
+					</li>
+					<li class="mui-table-view-cell">
+						银行卡号
+						<input name="id_num" type="text"  class="wwt_mui_input" placeholder="请输入银行卡号码"/>
+					</li>
+				</ul>
+				<ul class="mui-table-view" style="border-top: 0;">
+					<li class="mui-table-view-cell">
+						开户银行
+						<input name="extra" type="text" class="wwt_mui_input" placeholder="请输入开户银行"/>
+					</li>
+					<li class="mui-table-view-cell">
+						开户支行
+						<input type="hidden" name="is_default" value="0" />
+						<input name="extra1" type="text"  class="wwt_mui_input" placeholder="请输入银行开户支行"/>
+					</li>
+				</ul>
+			</form>
+			<button type="button" class="sure_btn bind_btn">确认绑定</button>
+			
+		</div>
+		<!--添加支付宝-->
+		<div class="choose_zfb">
+			<div class="nav">
+				<a href="javascript:;" class="back"></a>
+				绑定支付宝
+				<a href="javascript:;" class="right"></a>
+			</div>
+			<form>
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">
+						真实姓名
+						<input type="hidden" name="id" value="{%$user_info.id%}"/>
+						<input type="hidden" name="type" value="支付宝"/>
+						<input name="user_name" type="text" class="wwt_mui_input" placeholder="请输入支付宝实名姓名"/>
+					</li>
+					<li class="mui-table-view-cell">
+						支付宝账户
+						<input type="hidden" name="is_default" value="0"/>
+						<input name="id_num" type="text"  class="wwt_mui_input" placeholder="请输入支付宝账户"/>
+					</li>
+				</ul>
+			</form>
+			<button type="button" class="sure_btn bind_btn">确认绑定</button>
+			
+		</div>
+		
+		
+	</div>
+	</body>
+</html>

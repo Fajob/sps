@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<script src="public/js/jquery-2.1.4.min.js"></script>
+		<script src="public/js/layer/layer.js"></script>
+		<link rel="stylesheet" href="/public/css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="/public/css/media-100.css"/>
+		<link rel="stylesheet" type="text/css" href="/public/css/login-style.css"/>
+	</head>
+	<style>
+		.sps-pay-in-property>p{
+			padding-left: 3%;
+		}
+		.sps-pay-out-2dcode{
+			text-align: center;
+		}
+		.sps-pay-out-rightbtn{
+			color: #FFFFFF;
+			background-color: #00D1FF;
+		}
+		.sps-pay-out-leftbtn{
+			color: #00D1FF;
+			background-color: #FFFFFF;
+		}
+	</style>
+	<body>
+		<div class="sps-pay-in">
+			<div class="sps-pay-in-title">
+				<div class="sps-pay-in-btn">
+					<a href="index.php?ctl=translate"><div class="sps-pay-out-leftbtn">转入</div></a>
+					<a href="index.php?ctl=translate&act=out"><div class="sps-pay-out-rightbtn">转出</div></a>
+				</div>
+			</div>
+			<div class="sps-pay-in-property">
+				<p class="sps-pay-in-property-cont">
+					<span>SPS资产：</span>
+					<span></span>
+				</p>
+				<p></p>
+				<div class="sps-pay-out-2dcode">
+					<p>
+						<span>转出地址：</span><input id="toAddress" type="text" placeholder="输入地址或扫码"/>
+						<img src="/public/web/images/saomakuang.png" />
+					</p>
+					<p>
+						<span>转出数额：</span><input id="num" type="text" placeholder="请输入要转出的数量"/>
+					</p>
+					<p>
+						<span>交易密码：</span><input id="userPwTrade" type="text" placeholder="输入交易密码"/>
+					</p>
+					<p class="sps-pay-out-2dcode-btn">
+						<input id="confirmOut" type="button" value="确认转出"/>
+					</p>
+				</div>
+			</div>
+			<div class="sps-pay-in-detail">
+				<div class="sps-pay-in-detail-title">
+					<img src="/public/web/images/detail.png" />
+					<span>转出明细</span>
+				</div>
+				<div class="sps-pay-in-detail-cont">
+					<table>
+						<thead>
+							<tr>
+								<td>日期</td>
+								<td>用户</td>
+								<td>数额</td>
+								<td>状态</td>
+							</tr>
+						</thead>
+						<tbody>
+							{%foreach from=$data item=item1%}
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							{%/foreach%}
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="footer">
+		        <table>
+					<tr>
+						<td>
+							<a href="index.php?ctl=user&act=home">
+		                    <span><img class="bottomMenuIcon" style="height: 25px;" src="/public/web/images/home_dark.png"/></span>
+		                    <div style="color: #D4C9B4;" class="bottomMenuWords">首页</div></a>
+						</td>
+						<td>
+							<a href="index.php?ctl=mall">
+		                    <span><img class="bottomMenuIcon" style="height: 25px;" src="/public/web/images/market_dark.png"/></span>
+		                    <div style="color: #D4C9B4;" class="bottomMenuWords">SPS商城</div></a>
+						</td>
+						<td>
+							<a href="index.php?ctl=mall&act=cart_detail">
+		                    <span><img class="bottomMenuIcon" style="height: 25px;" src="/public/web/images/shoppingcar_dark.png"/></span>
+		                    <div style="color: #D4C9B4;" class="bottomMenuWords">购物车</div></a>
+						<td>
+							<a href="index.php?ctl=translate">
+		                    <span><img class="bottomMenuIcon" style="height: 25px;" src="/public/web/images/pay_light.png"/></span>
+		                    <div style="color: #00D1FF;" class="bottomMenuWords">SPS支付</div></a>
+						</td>
+						<td>
+							<a href="index.php?ctl=user&act=myinfo">
+		                    <span><img class="bottomMenuIcon" style="height: 25px;" src="/public/web/images/mine_dark.png"/></span>
+		                    <div style="color: #D4C9B4;" class="bottomMenuWords">我的</div></a>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<script>
+			$('#confirmOut').click(function(){
+				var id = '{%$user_info.id%}';
+				console.log(id);
+				var to_address = $('#toAddress').val();
+				var num = $('#num').val();
+				var userPwTrade = $('#userPwTrade').val();
+				$.post('api/index.php?ctl=translate&act=do_translate_sps',{'id':id,'to_address':to_address,'num':num,'user_pwd_trade':userPwTrade},function(data){
+					if(data)
+					{
+						var obj = eval('(' + data + ')');
+						if(obj.status == true){
+							window.location.href = "index.php?ctl=translate&act=out";
+						}
+						else
+						{	
+							layer.msg(obj.msg, function(){
+								
+							});
+						}
+					}
+					else
+					{
+						alert('服务器返回一个错误');
+					}
+				})
+			})
+		</script>
+	</body>
+</html>

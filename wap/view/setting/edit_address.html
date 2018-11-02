@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>编辑地址</title>
+		<script src="/public/js/jquery-2.1.4.min.js"></script>
+		<script src="/public/js/mui.min.js"></script>
+		<script src="/public/js/mui.picker.min.js"></script>
+		<script src="/public/js/city.data-3.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/public/js/wwt_style.js"></script>
+		<script src="public/js/layer/layer.js"></script>
+		<link href="/public/css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="/public/css/wwt_style.css" />
+		<link rel="stylesheet" type="text/css" href="/public/css/mui.picker.min.css" />
+	</head>
+	<style type="text/css">
+		.mui-table-view-cell:after {
+			left: 0px;
+		}
+		
+		li {
+			font-size: 14px;
+			line-height: 40px;
+			position: relative;
+		}
+		
+		ul:before {
+			height: 0px !important;
+		}
+		
+		ul:after {
+			height: 0px !important;
+		}
+		
+		li input {
+			text-align: left !important;
+			color: #666 !important;
+		}
+		
+		.mui-icon-checkmarkempty:before {
+			content: '\e472';
+			position: relative;
+			right: 5px;
+		}
+		
+		.hide {
+			display: none;
+		}
+	</style>
+
+	<body style="background: #efefef;">
+		<div class="nav">
+			<a href="javascript:history.back(-1)" class="back"></a>
+			编辑地址
+			<a href="javascript:;" class="right" style="color: #00d1ff;">保存</a>
+		</div>
+		{%foreach from=$address item=item1%}
+		<form class="edit_form hide" action="">
+			<ul class="mui-table-view" style="margin-top: 5px;">
+				<li class="mui-table-view-cell">
+					真实姓名
+					<input type="hidden" name="id" value="{%$user_info.id%}" />
+					<input type="hidden" class="address_id" name="address_id" value="{%$item1.address_id%}" />
+					<input type="text" name="user_name" class="wwt_mui_input" value="{%$item1.user_name%}" />
+				</li>
+				<li class="mui-table-view-cell">
+					手机号
+					<input type="text" name="user_phone" class="wwt_mui_input" value="{%$item1.user_phone%}" />
+				</li>
+				<li class="mui-table-view-cell">
+					所在地区
+					<input type="text" name="address" value="{%$item1.address%}" class="wwt_mui_input add_address" placeholder="选择所在省市区" />
+					<button type="button" class="wwt_city_btn choose_city"></button>
+				</li>
+				<li class="mui-table-view-cell">
+					详细地址
+					<input name="address1" style="border: none;font-size: 13px;margin-bottom: 0;padding: 10px 5px;" type="text" value="{%$item1.address1%}" />
+				</li>
+			</ul>
+			<div class="choose_address">
+				{%if $item1.is_default eq 0%}
+				<p>
+					<label>
+						<input id="is_default" type="radio" name="is_dft" value="{%$item1.is_default%}"/>
+						<span class="mui-icon"></span>默认地址
+					</label>
+				</p>
+				{%else%}
+				<p>
+					<label class="wwt_select_label">
+						<input id="is_default" type="radio" name="is_dft" value="{%$item1.is_default%}"/>
+						<span class="mui-icon mui-icon-checkmarkempty wwt_select_address"></span>默认地址
+					</label>
+				</p>
+				{%/if%}
+				<a href="javascript:;" onclick="tishi()">删除地址</a>
+			</div>
+		</form>
+		{%/foreach%}
+		<!--删除提示-->
+		<div class="sign_out_con none">
+			<div>
+				<p class="out_con">您确定要删除吗？</p>
+				<p class="out_choose">
+					<a href="javascript:;" class="wwt_sign_close" onclick="wwt_close()">取消</a>
+					<a href="javascript:;" class="wwt_sign_sure">确认</a>
+				</p>
+			</div>
+		</div>
+
+	</body>
+	<script>
+		//获取地址id
+		var thisURL = document.URL;
+		var addressId = thisURL.split('&');
+		addressId = addressId[addressId.length - 1].split('=');
+		addressId = addressId[1];
+		var realAddr = document.getElementsByClassName('edit_form');
+		for(var i = 0; i < realAddr.length; i++) {
+			var realAddrId = realAddr[i].getElementsByClassName('address_id')[0].value;
+			if(realAddrId == addressId) {
+				realAddr[i].classList.remove('hide');
+				realAddr[i].classList.add('use_form');
+				//城市三级联动
+				(function($, doc) {
+					$.init();
+					$.ready(function() {
+						var get_city = function(obj, param) {
+							return obj[param] || '';
+						};
+						var city = new $.PopPicker({
+							layer: 3
+						});
+						city.setData(cityData3);
+						var btn = doc.getElementsByClassName('choose_city')[i];
+						var _input = doc.getElementsByClassName('add_address')[i];
+						btn.addEventListener('tap', function(event) {
+							city.show(function(items) {
+								_input.value = get_city(items[0], 'text') + " " + get_city(items[1], 'text') + " " + get_city(items[2], 'text');
+								//返回 false 可以阻止选择框的关闭
+								//return false;
+							});
+						}, false);
+					});
+				})(mui, document);
+				break;
+			}
+		}
+
+		//是否为默认地址
+		var is_default;
+		$(document).on("click", "label", function() {
+			$(this).toggleClass("wwt_select_label");
+			$(this).children("span").toggleClass("mui-icon-checkmarkempty wwt_select_address");
+			if($(this).attr("class") == "wwt_select_label") {
+				var is_default = 1
+			} else {
+				var is_default = 0
+			}
+			$("#is_default").val(is_default);
+		})
+
+		//保存
+		$(document).on("click", ".right", function() {
+			var id = $('.use_form input[name="id"]').val();
+			var addressid = $('.use_form input[name="address_id"]').val();
+			var addr = $('.use_form input[name="address"]').val();
+			var addr1 = $('.use_form input[name="address1"]').val();
+			var userN = $('.use_form input[name="user_name"]').val();
+			var userP = $('.use_form input[name="user_phone"]').val();
+			var isD = $('#is_default').val();
+			$.post("api/index.php?ctl=user&act=do_update_address", {
+				"id": id,
+				"address_id": addressid,
+				"address": addr,
+				"address1": addr1,
+				"user_name": userN,
+				"user_phone": userP,
+				"is_default": isD,
+			}, function(data) {
+				if(data) {
+					var _data = eval("(" + data + ")");
+					if(_data.status == true) {
+						alert(_data.msg);
+						window.location.href = "index.php?ctl=setting&act=address_gl";
+					} else {
+						layer.msg(_data.msg, function() {});
+					}
+				}
+			})
+		})
+
+		//删除地址
+		$('.wwt_sign_sure').click(function() {
+			var address_id = addressId;
+			var id = {%$user_info.id%};
+			$.post("api/index.php?ctl=user&act=do_del_address", {
+				"address_id": address_id,
+				"id": id
+			}, function(data) {
+				if(data) {
+					var _data = eval("(" + data + ")");
+					if(_data.status == true) {
+						alert("删除成功");
+						window.location.href = 'index.php?ctl=setting&act=address_gl';
+					} else {
+						layer.msg(_data.msg, function() {});
+					}
+				}
+			})
+		})
+	</script>
+
+</html>
